@@ -1,42 +1,56 @@
 #include <sys/types.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/wait.h>
 
-int main(){
-  pid_t pid1,pid2;
-  pid1 = fork();
+void main(int argc, char *argv[]){
+  pid_t procA,procB;
 
- if(pid1 < 0){
-  perror("fork() error");
-  exit(-1);
- }
- if(pid1 == 0){
-   while(1){
-  for(char c = 'A'; c <= 'C'; ++c)
-    printf("%c\n", c);
-    sleep(1);
-  }
- }
- else{
-   pid2 = fork();
-   if(pid2 < 0){
-    perror("fork() error");
+  char* s = NULL;
+  printf("Introduzca el nombre del programa: ");
+  scanf("%s\n", &s);
+
+  procA = fork();
+
+  if(procA < 0)
+  {
+    fprintf(stderr, "Fork1 Failed");
     exit(-1);
-   }
-   if(pid2 == 0){
-     while(1){
-     for(char c = 'a'; c <= 'c'; ++c)
-       printf("%c\n", c);
-     sleep(1);
-     }
-   }else{
-     while(1){
-       printf("El padre ejecutando...\n");
-       sleep(1);
-     }
-     wait(NULL);
-   }
+  }
+  if(procA == 0)
+  {
+    int ret = execvp("cat", "cat", argv[0], NULL);
+
+    if(ret == -1)
+    {
+      perror("execvp");
+    }
+
+  }
+  else
+  {
+
+    procB = fork();
+
+    if(procB < 0)
+    {
+      fprintf(stderr, "Fork2 Failed");
+      exit(-1);
+    }
+    if(procB == 0)
+    {
+      int ret = execl(argv[0], s, NULL);
+
+      if(ret == -1)
+      {
+        perror("execvp");
+      }
+
+    }
+    else
+    {
+      wait(NULL);
+      printf("Proceso hijo completado");
+      exit(0;
+    }
+
   }
 }
