@@ -3,11 +3,22 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+void usage(int argc){
+  if(argc != 3){
+    fprintf(stderr, "Usage: <path_texto> <path_programa>\n" );
+    exit(-1);
+  }
+}
 
 void main(int argc, char *argv[]){
   //preguntar directorios relativos ./ con que nombre lo ponemos y como hacer que el programa espere la ejecucion del prgrama hijo
+  usage(argc);
 
   pid_t procA,procB;
+
+
   procA = fork();
 
   if(procA < 0)
@@ -18,10 +29,7 @@ void main(int argc, char *argv[]){
   if(procA == 0)
   {
 
-    /*char* nombre_texto = NULL;
-    printf("Introduzca el path del archivo de texto: ");
-    scanf("%s\n", nombre_texto);*/
-    char * args[] = {"cat", /*nombre_texto*/"/home/matthew/Documents/Arqui/Practica1/main.c", NULL};
+    char * args[] = {"cat",argv[1], NULL};
     int ret = execv("/bin/cat", args);
 
     if(ret == -1)
@@ -42,11 +50,8 @@ void main(int argc, char *argv[]){
     }
     if(procB == 0)
     {
-      /*char* nombre_pro;
-      printf("Introduzca el nombre del programa: ");
-      scanf("%s\n", nombre_pro);*/
-
-      int ret = execlp("/home/matthew/Documents/Arqui/Practica1/prog1", /*nombre_pro*/"prog1", NULL);
+      sleep(1);
+      int ret = execlp(argv[2], argv[2], NULL);
 
       if(ret == -1)
       {
@@ -57,7 +62,8 @@ void main(int argc, char *argv[]){
     else
     {
       wait(NULL);
-      printf("Proceso hijo completado");
+      wait(NULL);
+      printf("Proceso hijo completado\n");
       exit(0);
     }
 
