@@ -13,7 +13,7 @@ void usage(int argc){
 }
 
 void main(int argc, char *argv[]){
-  //preguntar directorios relativos ./ con que nombre lo ponemos y como hacer que el programa espere la ejecucion del prgrama hijo
+  
   usage(argc);
 
   pid_t procA,procB;
