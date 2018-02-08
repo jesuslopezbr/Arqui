@@ -63,7 +63,7 @@ void main(int argc, char *argv[]){
     {
       wait(NULL);
       wait(NULL);
-      printf("\nProcesos hijos completados\n");
+      printf("\nControl devuelto al padre: terminando la ejecución...\n");
       exit(0);
     }
 
