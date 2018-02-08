@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <math.h>
 
-int main(){
+int main(int argc, char * argv[]){
   double num, result;
+  printf("%s\n",argv[0] );
   printf("Escribe un numero positivo para calcular su raiz cuadrada: \n");
   scanf("%lf",&num);
   if(num < 0 ){
