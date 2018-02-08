@@ -13,7 +13,7 @@ void usage(int argc){
 }
 
 void main(int argc, char *argv[]){
-  
+
   usage(argc);
 
   pid_t procA,procB;
@@ -63,7 +63,7 @@ void main(int argc, char *argv[]){
     {
       wait(NULL);
       wait(NULL);
-      printf("Proceso hijo completado\n");
+      printf("\nProceso hijo completado\n");
       exit(0);
     }
 
