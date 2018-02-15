@@ -30,6 +30,8 @@ int main(int argc, char *argv[]){
 
     int result = scanf("%d", &choice);
     printf("%d\n", result);
+    if(result == 0)
+      result = 1;
 
     switch (choice) {
       case 0:
@@ -59,6 +61,7 @@ int main(int argc, char *argv[]){
         break;
       default:
         printf("Not valid\n");
+        choice = 7;
         break;
     }
   }while(exit == 1);
