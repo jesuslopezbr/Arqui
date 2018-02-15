@@ -9,6 +9,24 @@ void usage(int argc){
   }
 }
 
+void menu(){
+  printf("\nExtended Operating System Functions: \n");
+  printf("[0] Exit - Ordered termination\n");
+  printf("[1] Edit user data\n");
+  printf("[2] Monitor file system activation\n");
+  printf("[3] Clock activation\n");
+  printf("[4] Clock stop\n");
+  printf("[5] Process monitor activation\n");
+  printf("[6] Automatic back up activation\n");
+  printf("[7] Keep alive reporting\n");
+  printf("\n ExOS> ");
+}
+
+void clock_activation(){
+  execlp("/bin/date", "date -u",NULL);
+
+}
+
 int main(int argc, char *argv[]){
 
   usage(argc);
@@ -18,20 +36,13 @@ int main(int argc, char *argv[]){
   int result = 0;
 
   do{
-    printf("\nExtended Operating System Functions: \n");
-    printf("[0] Exit - Ordered termination\n");
-    printf("[1] Edit user data\n");
-    printf("[2] Monitor file system activation\n");
-    printf("[3] Clock activation\n");
-    printf("[4] Clock stop\n");
-    printf("[5] Process monitor activation\n");
-    printf("[6] Automatic back up activation\n");
-    printf("[7] Keep alive reporting\n");
-    printf("\n ExOS> ");
-
     do{
+
+      menu();
+
       result = scanf("%d", &choice);
-      printf("%d\n", result);
+      if(result == 0)
+        while(fgetc(stdin) != '\n');
     }while(result <= 0);
 
     switch (choice) {
@@ -47,6 +58,7 @@ int main(int argc, char *argv[]){
         break;
       case 3:
         printf("Clock activated\n");
+        clock_activation();
         break;
       case 4:
         printf("Clocks stopped\n");
