@@ -32,72 +32,6 @@ void sigint_handler(int signo){
   go = 1;
 }
 
-int main(int argc, char *argv[]){
-
-  usage(argc);
-
- if(signal(SIGINT, sigint_handler) == SIG_ERR)
-    printf("\nError Catching signal\n");
-
-  pid_t pid_date;
-  int choice;
-  int exit = 1;
-  int result = 0;
-
-  do{
-    do{
-      menu();
-
-      result = scanf("%d", &choice);
-      if(result == 0)
-        while(fgetc(stdin) != '\n');
-
-    }while(result <= 0);
-
-    switch (choice) {
-      case 0:
-        printf("Exit\n");
-        exit = 0;
-        if(pid_date != 0){
-          kill(pid_date, SIGKILL);
-        }
-        wait(NULL);
-        break;
-      case 1:
-        printf("Editing user data\n");
-        editor();
-        break;
-      case 2:
-        printf("Monitoring file system\n");
-        break;
-      case 3:
-        printf("Clock activated\n");
-        pid_date = fork();
-        if(pid_date == 0)
-          clock_activation();
-        break;
-      case 4:
-        printf("Clocks stopped\n");
-        kill(pid_date,SIGKILL);
-        break;
-      case 5:
-        printf("Process monitoring\n");
-        break;
-      case 6:
-        printf("Backing up\n");
-        backup();
-        break;
-      case 7:
-        printf("Checking live processes\n");
-        break;
-      default:
-        printf("Not valid\n");
-        choice = 7;
-        break;
-    }
-  }while(exit == 1);
-}
-
 void clock_activation(){
   int time_type;
   pid_t app;
@@ -212,4 +146,70 @@ void backup()
         write(fd[1], line2, MAXLINE);
       }
       exit(0);
+}
+
+int main(int argc, char *argv[]){
+
+  usage(argc);
+
+ if(signal(SIGINT, sigint_handler) == SIG_ERR)
+    printf("\nError Catching signal\n");
+
+  pid_t pid_date;
+  int choice;
+  int exit = 1;
+  int result = 0;
+
+  do{
+    do{
+      menu();
+
+      result = scanf("%d", &choice);
+      if(result == 0)
+        while(fgetc(stdin) != '\n');
+
+    }while(result <= 0);
+
+    switch (choice) {
+      case 0:
+        printf("Exit\n");
+        exit = 0;
+        if(pid_date != 0){
+          kill(pid_date, SIGKILL);
+        }
+        wait(NULL);
+        break;
+      case 1:
+        printf("Editing user data\n");
+        editor();
+        break;
+      case 2:
+        printf("Monitoring file system\n");
+        break;
+      case 3:
+        printf("Clock activated\n");
+        pid_date = fork();
+        if(pid_date == 0)
+          clock_activation();
+        break;
+      case 4:
+        printf("Clocks stopped\n");
+        kill(pid_date,SIGKILL);
+        break;
+      case 5:
+        printf("Process monitoring\n");
+        break;
+      case 6:
+        printf("Backing up\n");
+        backup();
+        break;
+      case 7:
+        printf("Checking live processes\n");
+        break;
+      default:
+        printf("Not valid\n");
+        choice = 7;
+        break;
+    }
+  }while(exit == 1);
 }
