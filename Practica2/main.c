@@ -4,6 +4,8 @@
 #include <signal.h>
 #include <sys/wait.h>
 
+#define MAXLINE 200
+
 int go = 0;
 
 void usage(int argc){
@@ -28,28 +30,6 @@ void menu(){
 
 void sigint_handler(int signo){
   go = 1;
-}
-
-void clock_activation(){
-  int time_type;
-  pid_t app;
-    do{
-      while(go == 0);
-    app = fork();
-
-    if(time_type == 0){
-      if(app == 0)
-        execlp("/bin/date", "date",NULL);
-      time_type = 1;
-    }else{
-      if(app == 0)
-        execlp("/bin/date", "date","-u",NULL);
-      time_type = 0;
-    }
-    go = 0;
-  }while (1);
-
-
 }
 
 int main(int argc, char *argv[]){
@@ -85,6 +65,7 @@ int main(int argc, char *argv[]){
         break;
       case 1:
         printf("Editing user data\n");
+        editor();
         break;
       case 2:
         printf("Monitoring file system\n");
@@ -104,6 +85,7 @@ int main(int argc, char *argv[]){
         break;
       case 6:
         printf("Backing up\n");
+        backup();
         break;
       case 7:
         printf("Checking live processes\n");
@@ -114,4 +96,120 @@ int main(int argc, char *argv[]){
         break;
     }
   }while(exit == 1);
+}
+
+void clock_activation(){
+  int time_type;
+  pid_t app;
+    do{
+      while(go == 0);
+    app = fork();
+
+    if(time_type == 0){
+      if(app == 0)
+        execlp("/bin/date", "date",NULL);
+      time_type = 1;
+    }else{
+      if(app == 0)
+        execlp("/bin/date", "date","-u",NULL);
+      time_type = 0;
+    }
+    go = 0;
+  }while (1);
+}
+
+void editor()
+{
+
+    pid_t pid_editor;
+
+    pid_editor = fork();
+
+    if(pid_editor < 0)
+    {
+      fprintf(stderr, "Editor_Fork Failed\n");
+      exit(-1);
+    }
+
+    if(pid_editor == 0)
+    {
+      //HIJO
+      int ret;
+
+      ret = execl("/usr/bin/gedit", "gedit", NULL);
+
+      if (ret == -1)
+      {
+        perror("execl");
+      }
+    }
+    else
+    {
+      //PADRE
+      wait(NULL);
+      printf("\nHijo Completo\n");
+      exit(0);
+    }
+}
+
+void backup()
+{
+
+      int n, fd[2];
+      char line1[MAXLINE];
+      char line2[MAXLINE];
+      pid_t pid_backup;
+
+      if (pipe(fd) < 0)
+      {
+        fprintf(stderr, "\nError in pipe creation\n\n");
+        exit(-1);
+      }
+      pid_backup = fork();
+
+      if(pid_backup < 0)
+      {
+        fprintf(stderr, "\nEditor_Fork Failed\n\n");
+        exit(-1);
+      }
+
+      if(pid_backup == 0)
+      {
+        //HIJO
+        close(fd[1]);
+        n = read(fd[0], line1, MAXLINE);
+        if(n < 0)
+        {
+          fprintf(stderr, "\nEditor_Fork Failed\n\n");
+          exit(-1);
+        }
+
+        write(STDOUT_FILENO, line1, n);
+
+        FILE* f_bkp = fopen("users.bkp", "wt");
+        fputs(line1, f_bkp);
+        fclose(f_bkp);
+      }
+      else
+      {
+        //PADRE
+        FILE* fb = fopen("users.data", "r");
+
+        if(fb != NULL)
+        {
+            if(fgets(line2, MAXLINE, fb) != NULL)
+            {
+              puts(line2);
+            }
+            fclose(fb);
+        }
+        else
+        {
+            perror("Error opening file");
+        }
+
+        close(fd[0]);
+        write(fd[1], line2, MAXLINE);
+      }
+      exit(0);
 }
