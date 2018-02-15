@@ -15,6 +15,7 @@ int main(int argc, char *argv[]){
 
   int choice;
   int exit = 1;
+  int result = 0;
 
   do{
     printf("\nExtended Operating System Functions: \n");
@@ -28,10 +29,10 @@ int main(int argc, char *argv[]){
     printf("[7] Keep alive reporting\n");
     printf("\n ExOS> ");
 
-    int result = scanf("%d", &choice);
-    printf("%d\n", result);
-    if(result == 0)
-      result = 1;
+    do{
+      result = scanf("%d", &choice);
+      printf("%d\n", result);
+    }while(result <= 0);
 
     switch (choice) {
       case 0:
