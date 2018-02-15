@@ -48,19 +48,24 @@ int main(int argc, char *argv[])
     {
       //PADRE
       FILE* fb = fopen("users.data", "r");
-      if(fb == NULL)
+
+      if(fb != NULL)
       {
-        printf("\nError en la apertura del archivo\n\n");
+          if(fgets(line2, MAXLINE, fb) != NULL)
+          {
+            puts(line2);
+          }
+          fclose(fb);
       }
       else
       {
-        line2 = fgets(fb);
+          perror("Error opening file");
       }
-      fclose(fb);
 
       close(fd[0]);
-      write(fd[1], line2);
+      write(fd[1], line2, MAXLINE);
     }
+    exit(0);
 }
 
 void editor()
