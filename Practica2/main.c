@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-#define MAXLINE 200
+#define MAXLINE 14
 
 int go = 0;
 
@@ -82,7 +82,7 @@ void editor()
       //PADRE
       wait(NULL);
       printf("\nHijo Completo\n");
-      exit(0);
+
     }
 }
 
@@ -145,7 +145,6 @@ void backup()
         close(fd[0]);
         write(fd[1], line2, MAXLINE);
       }
-      exit(0);
 }
 
 int main(int argc, char *argv[]){
