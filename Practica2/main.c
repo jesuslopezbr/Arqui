@@ -59,11 +59,10 @@ int main(int argc, char *argv[]){
  if(signal(SIGINT, sigint_handler) == SIG_ERR)
     printf("\nError Catching signal\n");
 
-  pid_t pid_date[100];
+  pid_t pid_date;
   int choice;
   int exit = 1;
   int result = 0;
-  int i = 0;
 
   do{
     do{
@@ -79,11 +78,8 @@ int main(int argc, char *argv[]){
       case 0:
         printf("Exit\n");
         exit = 0;
-        while(pid_date[i] == 0){
-          if(pid_date != 0){
-            kill(pid_date, SIGKILL);
-          i++;
-        }
+        if(pid_date != 0){
+          kill(pid_date, SIGKILL);
         }
         wait(NULL);
         break;
@@ -94,20 +90,14 @@ int main(int argc, char *argv[]){
         printf("Monitoring file system\n");
         break;
       case 3:
-        pid_date[i] = fork();
         printf("Clock activated\n");
-        if(pid_date[i] == 0)
+        pid_date = fork();
+        if(pid_date == 0)
           clock_activation();
-        i++;
         break;
       case 4:
         printf("Clocks stopped\n");
-        i = 0;
-        while(pid_date[i] == 0){
-          if(pid_date[i] != 0){
-            kill(pid_date[i], SIGKILL);
-          i++;
-        }
+        kill(pid_date,SIGKILL);
         break;
       case 5:
         printf("Process monitoring\n");
