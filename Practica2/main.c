@@ -98,9 +98,6 @@ void backup()
 {
 
       int n, fd[2];
-      //char *line1 = NULL;
-      char *line2 = NULL;
-      char line1[MAXLINE];
       pid_t pid_backup;
 
       if (pipe(fd) < 0)
@@ -119,6 +116,7 @@ void backup()
       if(pid_backup == 0)
       {
         //HIJO
+        char line1[MAXLINE];
         close(fd[1]);
 
         n = read(fd[0], line1, MAXLINE);
@@ -136,6 +134,7 @@ void backup()
       else
       {
         //PADRE
+        char *line2 = NULL;
         int length;
         FILE* fb = fopen("users.data", "rb");
 
