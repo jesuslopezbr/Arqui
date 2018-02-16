@@ -35,20 +35,28 @@ void sigint_handler(int signo){
 void clock_activation(){
   int time_type;
   pid_t app;
-    do{
-      while(go == 0);
+
+  do
+  {
+    while(go == 0);
+
     app = fork();
 
-    if(time_type == 0){
+    if(time_type == 0)
+    {
       if(app == 0)
-        execlp("/bin/date", "date",NULL);
+        execlp("/bin/date", "date", NULL);
       time_type = 1;
-    }else{
+    }
+    else
+    {
       if(app == 0)
-        execlp("/bin/date", "date","-u",NULL);
+        execlp("/bin/date", "date", "-u", NULL);
       time_type = 0;
     }
+
     go = 0;
+
   }while (1);
 }
 
@@ -90,8 +98,8 @@ void backup()
 {
 
       int n, fd[2];
-      char line1[MAXLINE];
-      char line2[MAXLINE];
+      char *line1 = NULL;
+      char *line2 = NULL;
       pid_t pid_backup;
 
       if (pipe(fd) < 0)
@@ -103,7 +111,7 @@ void backup()
 
       if(pid_backup < 0)
       {
-        fprintf(stderr, "\nEditor_Fork Failed\n\n");
+        fprintf(stderr, "\nBackup_Fork Failed\n\n");
         exit(-1);
       }
 
@@ -114,7 +122,7 @@ void backup()
         n = read(fd[0], line1, MAXLINE);
         if(n < 0)
         {
-          fprintf(stderr, "\nEditor_Fork Failed\n\n");
+          fprintf(stderr, "\nRead_Pipe Failed\n\n");
           exit(-1);
         }
 
@@ -159,8 +167,10 @@ int main(int argc, char *argv[]){
   int exit = 1;
   int result = 0;
 
-  do{
-    do{
+  do
+  {
+    do
+    {
       menu();
 
       result = scanf("%d", &choice);
@@ -169,7 +179,8 @@ int main(int argc, char *argv[]){
 
     }while(result <= 0);
 
-    switch (choice) {
+    switch (choice)
+    {
       case 0:
         printf("Exit\n");
         exit = 0;
@@ -193,7 +204,7 @@ int main(int argc, char *argv[]){
         break;
       case 4:
         printf("Clocks stopped\n");
-        kill(pid_date,SIGKILL);
+        kill(pid_date, SIGKILL);
         break;
       case 5:
         printf("Process monitoring\n");
