@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-#define MAXLINE 14
+#define MAXLINE 10000
 
 int go = 0;
 
