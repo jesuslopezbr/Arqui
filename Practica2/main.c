@@ -104,7 +104,7 @@ void backup()
 
       if (pipe(fd) < 0)
       {
-        fprintf(stderr, "\nError in pipe creation\n\n");
+        fprintf(stderr, "\nFather: Error in pipe creation\n\n");
         exit(-1);
       }
       pid_backup = fork();
@@ -119,11 +119,16 @@ void backup()
       {
         //HIJO
         close(fd[1]);
-        n = read(fd[0], line1, MAXLINE);
-        if(n < 0)
+        line1 = malloc(sizeof(char));
+
+        if(line1 != NULL)
         {
-          fprintf(stderr, "\nRead_Pipe Failed\n\n");
-          exit(-1);
+          n = read(fd[0], line1, sizeof(char));
+          if(n < 0)
+          {
+            fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+            exit(-1);
+          }
         }
 
         write(STDOUT_FILENO, line1, n);
@@ -131,27 +136,47 @@ void backup()
         FILE* f_bkp = fopen("users.bkp", "wt");
         fputs(line1, f_bkp);
         fclose(f_bkp);
+        free(line1);
       }
       else
       {
         //PADRE
-        FILE* fb = fopen("users.data", "r");
+        FILE* fb = fopen("users.data", "rb");
 
         if(fb != NULL)
         {
-            if(fgets(line2, MAXLINE, fb) != NULL)
+            /*if(fgets(line2, MAXLINE, fb) != NULL)
             {
               puts(line2);
+            }*/
+            fseek (fb, 0, SEEK_END);
+            int length = ftell (fb);
+            if(length < 0)
+            {
+              fprintf(stderr, "\nFather: F_Tell Failed\n\n");
+              exit(-1);
             }
-            fclose(fb);
+            fseek (fb, 0, SEEK_SET);
+            line2 = malloc (length);
+            if(line2 != NULL)
+            {
+              int fr = fread (line2, 1, length, fb);
+              if(fr < 0)
+              {
+                fprintf(stderr, "\nFather: F_Read Failed\n\n");
+                exit(-1);
+              }
+            }
+            fclose (fb);
         }
         else
         {
-            perror("Error opening file");
+            perror("\nFather: Error opening file\n\n");
         }
 
         close(fd[0]);
         write(fd[1], line2, MAXLINE);
+        free(line2);
       }
 }
 
