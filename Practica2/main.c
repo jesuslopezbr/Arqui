@@ -35,7 +35,10 @@ void sigint_handler(int signo){
 void clock_activation(){
   int time_type;
   pid_t app;
+
     do{
+      go = 0;
+
       while(go == 0);
     app = fork();
 
@@ -48,7 +51,7 @@ void clock_activation(){
         execlp("/bin/date", "date","-u",NULL);
       time_type = 0;
     }
-    go = 0;
+
   }while (1);
 }
 
@@ -154,13 +157,15 @@ int main(int argc, char *argv[]){
  if(signal(SIGINT, sigint_handler) == SIG_ERR)
     printf("\nError Catching signal\n");
 
-  pid_t pid_date;
+  pid_t pid_date[20];
   int choice;
   int exit = 1;
   int result = 0;
+  int i = 0;
 
   do{
     do{
+      //system("clear");
       menu();
 
       result = scanf("%d", &choice);
@@ -173,8 +178,13 @@ int main(int argc, char *argv[]){
       case 0:
         printf("Exit\n");
         exit = 0;
-        if(pid_date != 0){
-          kill(pid_date, SIGKILL);
+        i--;
+        for(;i>=0;i--){
+          #ifdef DEBUG
+            printf("%d. ", i);
+            printf("Closing process: %d\n", pid_date[i]);
+          #endif
+          kill(pid_date[i],SIGKILL);
         }
         wait(NULL);
         break;
@@ -187,13 +197,28 @@ int main(int argc, char *argv[]){
         break;
       case 3:
         printf("Clock activated\n");
-        pid_date = fork();
-        if(pid_date == 0)
+        pid_date[i] = fork();
+        #ifdef DEBUG
+          if(pid_date[i]!= 0){
+            printf("%d. ", i);
+            printf("Process %d created\n", pid_date[i]);
+          }
+        #endif
+        if(pid_date[i] == 0)
           clock_activation();
+        i++;
         break;
       case 4:
+        i--;
+        for(;i>=0;i--){
+          #ifdef DEBUG
+            printf("%d. ", i);
+            printf("Closing process: %d\n", pid_date[i]);
+          #endif
+          kill(pid_date[i],SIGKILL);
+        }
         printf("Clocks stopped\n");
-        kill(pid_date,SIGKILL);
+        i=0;
         break;
       case 5:
         printf("Process monitoring\n");
