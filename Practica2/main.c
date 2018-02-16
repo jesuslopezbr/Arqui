@@ -10,7 +10,7 @@ int go = 0;
 
 void usage(int argc){
   if(argc != 2){
-    fprintf(stderr, "Usage: <monitoring_time_interval>\n" );
+    fprintf(stderr, "\nUsage: <monitoring_time_interval>\n" );
     exit(-1);
   }
 }
@@ -69,7 +69,7 @@ void editor()
 
     if(pid_editor < 0)
     {
-      fprintf(stderr, "Editor_Fork Failed\n");
+      fprintf(stderr, "\nEditor_Fork Failed\n");
       exit(-1);
     }
 
@@ -165,7 +165,7 @@ void backup()
             write(fd[1], line2, length);
             close(fd[1]);
             free(line2);
-            
+
             wait(NULL);
             printf("\nBackup Hecho\n");
         }
@@ -203,7 +203,7 @@ int main(int argc, char *argv[]){
     switch (choice)
     {
       case 0:
-        printf("Exit\n");
+        printf("\nExit\n");
         exit = 0;
         if(pid_date != 0){
           kill(pid_date, SIGKILL);
@@ -211,34 +211,34 @@ int main(int argc, char *argv[]){
         wait(NULL);
         break;
       case 1:
-        printf("Editing user data\n");
+        printf("\nEditing user data\n");
         editor();
         break;
       case 2:
-        printf("Monitoring file system\n");
+        printf("\nMonitoring file system\n");
         break;
       case 3:
-        printf("Clock activated\n");
+        printf("\nClock activated\n");
         pid_date = fork();
         if(pid_date == 0)
           clock_activation();
         break;
       case 4:
-        printf("Clocks stopped\n");
+        printf("\nClocks stopped\n");
         kill(pid_date, SIGKILL);
         break;
       case 5:
-        printf("Process monitoring\n");
+        printf("\nProcess monitoring\n");
         break;
       case 6:
-        printf("Backing up\n");
+        printf("\nBacking up\n");
         backup();
         break;
       case 7:
-        printf("Checking live processes\n");
+        printf("\nChecking live processes\n");
         break;
       default:
-        printf("Not valid\n");
+        printf("\nNot valid\n");
         choice = 7;
         break;
     }
