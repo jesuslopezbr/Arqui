@@ -98,11 +98,7 @@ void backup()
 {
 
       int n, fd[2];
-<<<<<<< HEAD
       char line1;
-=======
-      //char *line1 = NULL;
->>>>>>> 3ac0d14f0cb643eea8941a694e6fff4649a690ce
       char *line2 = NULL;
       char line1[MAXLINE];
       pid_t pid_backup;
@@ -125,11 +121,7 @@ void backup()
         //HIJO
         FILE* f_bkp = fopen("users.bkp", "w");
         close(fd[1]);
-<<<<<<< HEAD
-        //line1 = malloc(14);
 
-      //  if(line1 != NULL)
-          ;
           while((n = read(fd[0], &line1, sizeof(char))) != 0){
 
             int test = fwrite(&line1, sizeof(char), 1, f_bkp);
@@ -143,32 +135,17 @@ void backup()
 
 
           }
-        //write(STDOUT_FILENO, &line1, n);
 
-
-=======
-        //line1 = malloc(sizeof(688888888));
-
-        //if(line1 != NULL)
-        //{
-          n = read(fd[0], line1, MAXLINE/*sizeof(688888888)*/);
+          n = read(fd[0], line1, MAXLINE);
           if(n < 0)
           {
             fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
             exit(-1);
           }
-        //}
-
-        //write(STDOUT_FILENO, line1, n);
->>>>>>> 3ac0d14f0cb643eea8941a694e6fff4649a690ce
 
         fclose(f_bkp);
-<<<<<<< HEAD
         printf("Closed\n");
-=======
         exit(0);
->>>>>>> 3ac0d14f0cb643eea8941a694e6fff4649a690ce
-        //free(line1);
       }
       else
       {

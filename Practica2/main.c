@@ -89,7 +89,7 @@ void editor()
     {
       //PADRE
       wait(NULL);
-      printf("\nHijo Completo\n");
+      printf("\nusers.data: EDITADO\n");
 
     }
 }
@@ -120,39 +120,29 @@ void backup()
       {
         //HIJO
         close(fd[1]);
-        //line1 = malloc(sizeof(688888888));
 
-        //if(line1 != NULL)
-        //{
-          n = read(fd[0], line1, MAXLINE/*sizeof(688888888)*/);
-          if(n < 0)
-          {
-            fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
-            exit(-1);
-          }
-        //}
-
-        //write(STDOUT_FILENO, line1, n);
+        n = read(fd[0], line1, MAXLINE);
+        if(n < 0)
+        {
+          fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+          exit(-1);
+        }
 
         FILE* f_bkp = fopen("users.bkp", "wt");
         fputs(line1, f_bkp);
         fclose(f_bkp);
         exit(0);
-        //free(line1);
       }
       else
       {
         //PADRE
+        int length;
         FILE* fb = fopen("users.data", "rb");
 
         if(fb != NULL)
         {
-            /*if(fgets(line2, MAXLINE, fb) != NULL)
-            {
-              puts(line2);
-            }*/
             fseek (fb, 0, SEEK_END);
-            int length = ftell (fb);
+            length = ftell (fb);
             if(length < 0)
             {
               fprintf(stderr, "\nFather: F_Tell Failed\n\n");
@@ -177,8 +167,11 @@ void backup()
         }
 
         close(fd[0]);
-        write(fd[1], line2, MAXLINE);
+        write(fd[1], line2, length);
+        close(fd[1]);
         free(line2);
+        wait(NULL);
+        printf("\nBackup Hecho\n");
       }
 }
 
