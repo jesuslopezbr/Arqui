@@ -160,18 +160,19 @@ void backup()
               }
             }
             fclose (fb);
+
+            close(fd[0]);
+            write(fd[1], line2, length);
+            close(fd[1]);
+            free(line2);
+            
+            wait(NULL);
+            printf("\nBackup Hecho\n");
         }
         else
         {
             perror("\nFather: Error opening file\n\n");
         }
-
-        close(fd[0]);
-        write(fd[1], line2, length);
-        close(fd[1]);
-        free(line2);
-        wait(NULL);
-        printf("\nBackup Hecho\n");
       }
 }
 
