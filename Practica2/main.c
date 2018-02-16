@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <dirent.h>
 
 #define MAXLINE 14
 
@@ -91,7 +92,6 @@ void editor()
 
 void backup()
 {
-
       int n, fd[2];
       char line1[MAXLINE];
       char line2[MAXLINE];
@@ -150,6 +150,23 @@ void backup()
       }
 }
 
+void file_logger(){
+
+  DIR *d;
+  struct dirent *dir ;
+  FILE *log;
+  log = fopen("filesys.log", "w");
+
+  d = opendir("./");
+  if(d != NULL){
+    while((dir = readdir(d)))
+      fprintf(log, "%s\n", dir -> d_name);
+    closedir(d);
+    fclose(log);
+    exit(0);
+  }
+}
+
 int main(int argc, char *argv[]){
 
   usage(argc);
@@ -157,15 +174,12 @@ int main(int argc, char *argv[]){
  if(signal(SIGINT, sigint_handler) == SIG_ERR)
     printf("\nError Catching signal\n");
 
-  pid_t pid_date[20];
-  int choice;
-  int exit = 1;
-  int result = 0;
-  int i = 0;
+  pid_t pid_date[50], pid_file;
+  int choice, exit = 1,result = 0, i = 0, j = 0;
 
   do{
     do{
-      //system("clear");
+
       menu();
 
       result = scanf("%d", &choice);
@@ -176,17 +190,15 @@ int main(int argc, char *argv[]){
 
     switch (choice) {
       case 0:
-        printf("Exit\n");
         exit = 0;
         i--;
         for(;i>=0;i--){
-          #ifdef DEBUG
-            printf("%d. ", i);
-            printf("Closing process: %d\n", pid_date[i]);
-          #endif
+          printf("%d reporting: Terminating\n", pid_date[i]);
           kill(pid_date[i],SIGKILL);
         }
         wait(NULL);
+        wait(NULL);
+        printf("Main process reporting: Terminating\n");
         break;
       case 1:
         printf("Editing user data\n");
@@ -194,9 +206,14 @@ int main(int argc, char *argv[]){
         break;
       case 2:
         printf("Monitoring file system\n");
+        pid_file = fork();
+        if(pid_file == 0)
+          file_logger();
         break;
       case 3:
         printf("Clock activated\n");
+        if(i<0)
+          i=0;
         pid_date[i] = fork();
         #ifdef DEBUG
           if(pid_date[i]!= 0){
@@ -218,7 +235,7 @@ int main(int argc, char *argv[]){
           kill(pid_date[i],SIGKILL);
         }
         printf("Clocks stopped\n");
-        i=0;
+        i=-1;
         break;
       case 5:
         printf("Process monitoring\n");
@@ -228,7 +245,16 @@ int main(int argc, char *argv[]){
         backup();
         break;
       case 7:
-        printf("Checking live processes\n");
+        printf("Checking live processes...\n");
+        //Time processes
+        j=i;
+        if(j >= 0){
+          for(; j >= 0; j--)
+              printf("%d reporting: Alive\n", pid_date[j]);
+        }else{
+          printf("Only main process alive\n");
+        }
+
         break;
       default:
         printf("Not valid\n");
