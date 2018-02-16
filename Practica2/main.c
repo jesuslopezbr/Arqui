@@ -203,7 +203,7 @@ int main(int argc, char *argv[]){
     switch (choice)
     {
       case 0:
-        printf("\nExit\n");
+        printf("\nExit\n\n");
         exit = 0;
         if(pid_date != 0){
           kill(pid_date, SIGKILL);
