@@ -98,8 +98,9 @@ void backup()
 {
 
       int n, fd[2];
-      char *line1 = NULL;
+      //char *line1 = NULL;
       char *line2 = NULL;
+      char line1[MAXLINE];
       pid_t pid_backup;
 
       if (pipe(fd) < 0)
@@ -119,24 +120,25 @@ void backup()
       {
         //HIJO
         close(fd[1]);
-        line1 = malloc(sizeof(char));
+        //line1 = malloc(sizeof(688888888));
 
-        if(line1 != NULL)
-        {
-          n = read(fd[0], line1, sizeof(char));
+        //if(line1 != NULL)
+        //{
+          n = read(fd[0], line1, MAXLINE/*sizeof(688888888)*/);
           if(n < 0)
           {
             fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
             exit(-1);
           }
-        }
+        //}
 
-        write(STDOUT_FILENO, line1, n);
+        //write(STDOUT_FILENO, line1, n);
 
         FILE* f_bkp = fopen("users.bkp", "wt");
         fputs(line1, f_bkp);
         fclose(f_bkp);
-        free(line1);
+        exit(0);
+        //free(line1);
       }
       else
       {
