@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-#define MAXLINE 10000
+#define MAX_PIPE_SIZE 65536
 
 int go = 0;
 
@@ -116,27 +116,15 @@ void backup()
       if(pid_backup == 0)
       {
         //HIJO
-      /*char line1[MAXLINE];
+        char *line1 = (char *)malloc(MAX_PIPE_SIZE);
         close(fd[1]);
 
-        n = read(fd[0], line1, MAXLINE);
+
+        n = read(fd[0], line1, MAX_PIPE_SIZE);
         if(n < 0)
         {
           fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
           exit(-1);
-        }*/
-
-        char *line1 = (char *)malloc(sizeof(char));
-        close(fd[1]);
-
-        while(!EOF)
-        {
-          n = read(fd[0], line1, sizeof(char));
-          if(n < 0)
-          {
-            fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
-            exit(-1);
-          }
         }
 
         FILE* f_bkp = fopen("users.bkp", "wt");
