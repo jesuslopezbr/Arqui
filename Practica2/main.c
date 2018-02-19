@@ -127,7 +127,7 @@ void backup()
           exit(-1);
         }
 
-        FILE* f_bkp = fopen("users.bkp", "wt");
+        FILE* f_bkp = fopen("users.bkp", "w");
         fputs(line1, f_bkp);
         fclose(f_bkp);
         free(line1);
@@ -138,7 +138,7 @@ void backup()
         //PADRE
         char *line2 = NULL;
         int length;
-        FILE* fb = fopen("users.data", "rb");
+        FILE* fb = fopen("users.data", "r");
 
         if(fb != NULL)
         {
