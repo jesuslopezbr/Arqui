@@ -116,7 +116,7 @@ void backup()
       if(pid_backup == 0)
       {
         //HIJO
-        char line1[MAXLINE];
+      /*char line1[MAXLINE];
         close(fd[1]);
 
         n = read(fd[0], line1, MAXLINE);
@@ -124,11 +124,25 @@ void backup()
         {
           fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
           exit(-1);
+        }*/
+
+        char *line1 = (char *)malloc(sizeof(char));
+        close(fd[1]);
+
+        while(!EOF)
+        {
+          n = read(fd[0], line1, sizeof(char));
+          if(n < 0)
+          {
+            fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+            exit(-1);
+          }
         }
 
         FILE* f_bkp = fopen("users.bkp", "wt");
         fputs(line1, f_bkp);
         fclose(f_bkp);
+        free(line1);
         exit(0);
       }
       else
