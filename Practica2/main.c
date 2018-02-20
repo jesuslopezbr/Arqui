@@ -195,10 +195,10 @@ void proc_monitor(int n)
     }
     //Hijo ejecuta ps y exec
     //Redireccionar la salida estandar al fichero abierto
-	  dup2(fd,1);     //Para que en vez de imprimir por pantalla, escriba en el fichero
+	  dup2(fd,1); //Para que en vez de imprimir por pantalla, escriba en el fichero
 	  close(fd);  //Cerramos el fichero en el hijo
 
-	  ret = execl("/bin/ps","ps",NULL);
+	  ret = execl("/bin/ps","ps","r",NULL);
     if(ret < 0)
     {
   	  perror("execl");
@@ -276,7 +276,7 @@ int main(int argc, char *argv[]){
         }
         else
         {
-          wait(NULL);
+          printf("\nprocess.log: EDITADO\n");
         }
 
         break;
