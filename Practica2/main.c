@@ -1,8 +1,13 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>  //Estandar input outut(printf, scanf y fprintf)
+#include <stdlib.h> //Estandar library(exit y malloc)
+#include <sys/types.h> //Para las funciones fork, open y wait, y el tipo pid_t
+#include <sys/stat.h>  //Para open
+#include <sys/wait.h>	//Para wait
+#include <fcntl.h>  //Para open
+#include <unistd.h> //Para fork,close, execl, dup2 y sleep
+#include <string.h>  //Para la funcion strerror
+#include <errno.h>  //Para la variable errno
 #include <signal.h>
-#include <sys/wait.h>
 
 #define MAX_PIPE_SIZE 65536
 
@@ -179,17 +184,27 @@ void backup()
 void proc_monitor(int n)
 {
   int ret;
+  int fd;
 
-    while(1)
+  while(1)
+  {
+    fd = open("process.log",O_WRONLY|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
+    if(fd == -1)
     {
-      ret = execl("/bin/ps", "ps", ">", "process.log", NULL);
-      if (ret == -1)
-      {
-        perror("execl");
-      }
-
-      sleep(n);
+      printf("%s",strerror(errno));
     }
+    //Hijo ejecuta ps y exec
+    //Redireccionar la salida estandar al fichero abierto
+	  dup2(fd,1);     //Para que en vez de imprimir por pantalla, escriba en el fichero
+	  close(fd);  //Cerramos el fichero en el hijo
+
+	  ret = execl("/bin/ps","ps",NULL);
+    if(ret < 0)
+    {
+  	  perror("execl");
+    }
+    sleep(n);
+  }
 }
 
 int main(int argc, char *argv[]){
