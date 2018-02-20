@@ -176,21 +176,20 @@ void backup()
       }
 }
 
-void proc_monitor(char *argv[])
+void proc_monitor(int n)
 {
   int ret;
 
-  while(1)
-  {
-    sleep(argv[1]);
-
-    ret = execl("/bin/ps", "ps", "./*", ">", "process.log", NULL);
-
-    if (ret == -1)
+    while(1)
     {
-      perror("execl");
+      ret = execl("/bin/ps", "ps", ">", "process.log", NULL);
+      if (ret == -1)
+      {
+        perror("execl");
+      }
+
+      sleep(n);
     }
-  }
 }
 
 int main(int argc, char *argv[]){
@@ -202,9 +201,10 @@ int main(int argc, char *argv[]){
     printf("\nError Catching signal\n");
   }
 
-  pid_t pid_date;
+  pid_t pid_date, pid_proc;
   int choice;
-  int exit = 1;
+  int n;
+  int exit_p = 1;
   int result = 0;
 
   do
@@ -223,7 +223,7 @@ int main(int argc, char *argv[]){
     {
       case 0:
         printf("\nExit\n\n");
-        exit = 0;
+        exit_p = 0;
         if(pid_date != 0){
           kill(pid_date, SIGKILL);
         }
@@ -248,11 +248,22 @@ int main(int argc, char *argv[]){
         break;
       case 5:
         printf("\nProcess monitoring\n");
-        pid_proc = fork();
+        n = atoi(argv[1]);
+
+        if((pid_proc = fork()) < 0)
+        {
+          fprintf(stderr, "\nProc_Monitor_Fork Failed\n");
+          exit(-1);
+        }
         if(pid_proc == 0)
         {
-          proc_monitor(&argv[]);
+          proc_monitor(n);
         }
+        else
+        {
+          wait(NULL);
+        }
+
         break;
       case 6:
         printf("\nBacking up\n");
@@ -266,5 +277,5 @@ int main(int argc, char *argv[]){
         choice = 7;
         break;
     }
-  }while(exit == 1);
+  }while(exit_p == 1);
 }
