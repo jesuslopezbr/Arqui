@@ -126,7 +126,7 @@ void backup()
           exit(-1);
         }
 
-        FILE* f_bkp = fopen("users.bkp", "w");
+        FILE* f_bkp = fopen(".users.bkp", "w");
         fputs(line1, f_bkp);
         fclose(f_bkp);
         free(line1);
