@@ -248,6 +248,11 @@ int main(int argc, char *argv[]){
       case 2:
         printf("\nMonitoring file system\n");
         pid_file = fork();
+        if(pid_file < 0)
+        {
+          fprintf(stderr, "\nFile_Fork Failed\n");
+          exit(-1);
+        }
         if(pid_file == 0)
           file_logger();
         /*else{
@@ -256,19 +261,28 @@ int main(int argc, char *argv[]){
         }*/
         break;
       case 3:
-        printf("\nClock activated\n");
+
         if(i<0)
           i=0;
         pid_date[i] = fork();
-        #ifdef DEBUG
-          if(pid_date[i]!= 0){
-            printf("%d. ", i+1);
-            printf("Process %d created\n", pid_date[i]);
-          }
-        #endif
+        if(pid_date[i] < 0)
+        {
+          fprintf(stderr, "\nDate_Fork Failed\n");
+          exit(-1);
+        }
         if(pid_date[i] == 0)
           clock_activation();
-        i++;
+        else{
+          #ifdef DEBUG
+            if(pid_date[i]!= 0){
+              printf("%d. ", i+1);
+              printf("Process %d created\n", pid_date[i]);
+            }
+          #endif
+          printf("\nClock number %d activated\n", i+1);
+
+          i++;
+        }
         break;
       case 4:
         i--;
