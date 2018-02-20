@@ -6,6 +6,7 @@
 #include <dirent.h>
 
 #define MAXLINE 14
+#define MAX_PIPE_SIZE 65536
 
 int go = 0;
 
@@ -29,129 +30,124 @@ void menu(){
   printf("\n ExOS> ");
 }
 
+
 void sigint_handler(int signo){
-  go = 1;
+  go = 1;//Si recibe señal cambia variable para imprimir hora
 }
 
+/*Si recibe señal, crea nieto y imprime UTC o CET dependiendo
+de time_type*/
 void clock_activation(){
-  int time_type;
-  pid_t app;
+  int time_type, ret;
+  pid_t pid_time;
 
     do{
       go = 0;
 
       while(go == 0);
-    app = fork();
+    pid_time = fork();
 
     if(time_type == 0){
-      if(app == 0)
-        execlp("/bin/date", "date",NULL);
+      if(pid_time == 0)
+        ret = execlp("/bin/date", "date",NULL);
+      if (ret == -1)
+        perror("execl");
       time_type = 1;
     }else{
-      if(app == 0)
-        execlp("/bin/date", "date","-u",NULL);
+      if(pid_time == 0)
+        ret = execlp("/bin/date", "date","-u",NULL);
+      if (ret == -1)
+        perror("execl");
       time_type = 0;
     }
-
   }while (1);
 }
 
 void editor()
 {
+  int ret;
 
-    pid_t pid_editor;
+  ret = execl("/usr/bin/gedit", "gedit", NULL);
 
-    pid_editor = fork();
+  if (ret == -1)
+    perror("execl");
 
-    if(pid_editor < 0)
-    {
-      fprintf(stderr, "Editor_Fork Failed\n");
-      exit(-1);
-    }
-
-    if(pid_editor == 0)
-    {
-      //HIJO
-      int ret;
-
-      ret = execl("/usr/bin/gedit", "gedit", NULL);
-
-      if (ret == -1)
-      {
-        perror("execl");
-      }
-    }
-    else
-    {
-      //PADRE
-      wait(NULL);
-      printf("\nHijo Completo\n");
-
-    }
+  exit(0);
 }
 
-void backup()
+//HIJO que recive del pipe y escribe a archivo .users.bkp
+void child_bkp(int fd[2])
 {
-      int n, fd[2];
-      char line1[MAXLINE];
-      char line2[MAXLINE];
-      pid_t pid_backup;
+  int n;
+    /*Alternativa a preguntar, recibir de pipe
+    caracter a caracter y escribir en .users.bkp*/
+    char *line1 = (char *)malloc(MAX_PIPE_SIZE);
+    close(fd[1]);
 
-      if (pipe(fd) < 0)
+    n = read(fd[0], line1, MAX_PIPE_SIZE);
+    if(n < 0)
+    {
+      fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+      exit(-1);
+    }
+    #ifdef DEBUG
+      printf("Child reading from pipe: \n%s\n", line1);
+    #endif
+    FILE* f_bkp = fopen(".users.bkp", "w");
+    fputs(line1, f_bkp);
+    fclose(f_bkp);
+    free(line1);
+    exit(0);
+}
+
+//PADRE que lee archvo users.data y pasa a HIJO por pipe
+void father_bkp(int fd[2]){
+  char *line2 = NULL;
+  int length;
+  FILE* fb = fopen("users.data", "r");
+
+  if(fb != NULL)
+  {
+      /*Alternativa a preguntar, leer y mandar a pipe
+      caracter a caracter*/
+      fseek (fb, 0, SEEK_END);//Buscar longitud archivo
+      length = ftell (fb);
+      if(length < 0)
       {
-        fprintf(stderr, "\nError in pipe creation\n\n");
+        fprintf(stderr, "\nFather: F_Tell Failed\n\n");
         exit(-1);
       }
-      pid_backup = fork();
-
-      if(pid_backup < 0)
+      fseek (fb, 0, SEEK_SET);//Poner lectura desde el principio
+      line2 = malloc (length);
+      if(line2 != NULL)
       {
-        fprintf(stderr, "\nEditor_Fork Failed\n\n");
-        exit(-1);
-      }
-
-      if(pid_backup == 0)
-      {
-        //HIJO
-        close(fd[1]);
-        n = read(fd[0], line1, MAXLINE);
-        if(n < 0)
+        int fr = fread (line2, 1, length, fb);
+        if(fr < 0)
         {
-          fprintf(stderr, "\nEditor_Fork Failed\n\n");
+          fprintf(stderr, "\nFather: F_Read Failed\n\n");
           exit(-1);
         }
-
-        write(STDOUT_FILENO, line1, n);
-
-        FILE* f_bkp = fopen("users.bkp", "wt");
-        fputs(line1, f_bkp);
-        fclose(f_bkp);
       }
-      else
-      {
-        //PADRE
-        FILE* fb = fopen("users.data", "r");
+      fclose (fb);
+      #ifdef DEBUG
+        printf("Father writing to pipe: \n%s\n", line2);
+      #endif
+      close(fd[0]);
+      write(fd[1], line2, length);
+      close(fd[1]);
+      free(line2);
 
-        if(fb != NULL)
-        {
-            if(fgets(line2, MAXLINE, fb) != NULL)
-            {
-              puts(line2);
-            }
-            fclose(fb);
-        }
-        else
-        {
-            perror("Error opening file");
-        }
-
-        close(fd[0]);
-        write(fd[1], line2, MAXLINE);
-      }
+      wait(NULL);
+      printf("\nBackup Hecho\n");
+  }
+  else
+  {
+      perror("\nFather: Error opening file\n\n");
+  }
 }
 
 void file_logger(){
-
+  //Alternativa?
   DIR *d;
   struct dirent *dir ;
   FILE *log;
@@ -174,8 +170,10 @@ int main(int argc, char *argv[]){
  if(signal(SIGINT, sigint_handler) == SIG_ERR)
     printf("\nError Catching signal\n");
 
-  pid_t pid_date[50], pid_file;
-  int choice, exit = 1,result = 0, i = 0, j = 0;
+  pid_t pid_date[50], pid_file, pid_backup, pid_editor, pid_proc;
+  int choice, ex = 1,result = 0, i = 0, j = 0;
+  int fd[2], status;
+  pid_t check;
 
   do{
     do{
@@ -190,34 +188,81 @@ int main(int argc, char *argv[]){
 
     switch (choice) {
       case 0:
-        exit = 0;
+        ex = 0;
         i--;
         for(;i>=0;i--){
-          printf("%d reporting: Terminating\n", pid_date[i]);
           kill(pid_date[i],SIGKILL);
+          printf("%d reporting: Terminating\n", pid_date[i]);
         }
-        wait(NULL);
-        wait(NULL);
+        check = waitpid(pid_file, &status, WNOHANG);
+      //  if(check == -1)
+      //    fprintf(stderr, "\nError checking %d status\n\n", pid_file);
+        if(check == 0){
+          kill(pid_file,SIGKILL);
+          printf("%d reporting: Terminating\n", pid_file);
+        }
+        check = waitpid(pid_editor, &status, WNOHANG);
+        //if(check == -1)
+        //  fprintf(stderr, "\nError checking %d status\n\n", pid_editor);
+        if(check == 0){
+          kill(pid_editor,SIGKILL);
+          printf("%d reporting: Terminating\n", pid_editor);
+        }
+        check = waitpid(pid_backup, &status, WNOHANG);
+        //if(check == -1)
+        //  fprintf(stderr, "\nError checking %d status\n\n", pid_backup);
+        if(check == 0){
+          kill(pid_backup,SIGKILL);
+          printf("%d reporting: Terminating\n", pid_backup);
+        }
+
+        check = waitpid(pid_proc, &status, WNOHANG);
+        //if(check == -1)
+        //  fprintf(stderr, "\nError checking %d status\n\n", pid_proc);
+        /*if(check == 0){
+          kill(pid_proc,SIGKILL);
+          printf("%d reporting: Terminating\n", pid_proc);
+        }*/
+
+
         printf("Main process reporting: Terminating\n");
         break;
       case 1:
-        printf("Editing user data\n");
-        editor();
+        printf("\nEditing user data\n");
+        pid_editor = fork();
+
+        if(pid_editor < 0)
+        {
+          fprintf(stderr, "\nEditor_Fork Failed\n");
+          exit(-1);
+        }
+
+        if(pid_editor == 0)
+          editor();
+        /*else
+          {
+            wait(NULL);
+            printf("\nusers.data: EDITADO\n");
+          }*/
         break;
       case 2:
-        printf("Monitoring file system\n");
+        printf("\nMonitoring file system\n");
         pid_file = fork();
         if(pid_file == 0)
           file_logger();
+        /*else{
+          wait(NULL);
+          printf("\nFile logged\n");
+        }*/
         break;
       case 3:
-        printf("Clock activated\n");
+        printf("\nClock activated\n");
         if(i<0)
           i=0;
         pid_date[i] = fork();
         #ifdef DEBUG
           if(pid_date[i]!= 0){
-            printf("%d. ", i);
+            printf("%d. ", i+1);
             printf("Process %d created\n", pid_date[i]);
           }
         #endif
@@ -234,26 +279,66 @@ int main(int argc, char *argv[]){
           #endif
           kill(pid_date[i],SIGKILL);
         }
-        printf("Clocks stopped\n");
+        printf("\nClocks stopped\n");
         i=-1;
         break;
       case 5:
-        printf("Process monitoring\n");
+        printf("\nProcess monitoring\n");
         break;
       case 6:
-        printf("Backing up\n");
-        backup();
+        printf("\nBacking up\n");
+
+        if (pipe(fd) < 0)
+        {
+          fprintf(stderr, "\nFather: Error in pipe creation\n\n");
+          exit(-1);
+        }
+        pid_backup = fork();
+
+        if(pid_backup < 0)
+        {
+          fprintf(stderr, "\nBackup_Fork Failed\n\n");
+          exit(-1);
+        }
+
+        if(pid_backup == 0)
+          child_bkp(fd);
+        else
+          father_bkp(fd);
         break;
       case 7:
-        printf("Checking live processes...\n");
-        //Time processes
+        printf("\nChecking live processes...\n");
+        result = 0;
         j=i;
-        if(j >= 0){
-          for(; j >= 0; j--)
-              printf("%d reporting: Alive\n", pid_date[j]);
-        }else{
-          printf("Only main process alive\n");
+
+        for(; j > 0; j--){
+          printf("%d reporting: Alive\n", pid_date[j-1]);
+          result = 1;
         }
+
+        check = waitpid(pid_file, &status, WNOHANG);
+        if(check == 0 && pid_file != 0){
+          printf("%d reporting: Alive\n", pid_file);
+          result += 1;
+        }
+        check = waitpid(pid_editor, &status, WNOHANG);
+        if(check == 0 && pid_editor != 0){
+          printf("%d reporting: Alive\n", pid_editor);
+          result += 1;
+        }
+        check = waitpid(pid_backup, &status, WNOHANG);
+        if(check == 0 && pid_backup != 0){
+          printf("%d reporting: Alive\n", pid_backup);
+          result += 1;
+        }
+      /*  check = waitpid(pid_proc, &status, WNOHANG);
+        if(check == 0 && pid_proc != 0){
+          printf("%d reporting: Alive\n", pid_proc);
+          result += 1;
+        }*/
+        if(result == 0)
+          printf("No process running\n");
+
 
         break;
       default:
@@ -261,5 +346,5 @@ int main(int argc, char *argv[]){
         choice = 7;
         break;
     }
-  }while(exit == 1);
+  }while(ex == 1);
 }
