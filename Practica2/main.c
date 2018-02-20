@@ -119,7 +119,6 @@ void backup()
         char *line1 = (char *)malloc(MAX_PIPE_SIZE);
         close(fd[1]);
 
-
         n = read(fd[0], line1, MAX_PIPE_SIZE);
         if(n < 0)
         {
