@@ -176,12 +176,31 @@ void backup()
       }
 }
 
+void proc_monitor(char *argv[])
+{
+  int ret;
+
+  while(1)
+  {
+    sleep(argv[1]);
+
+    ret = execl("/bin/ps", "ps", "./*", ">", "process.log", NULL);
+
+    if (ret == -1)
+    {
+      perror("execl");
+    }
+  }
+}
+
 int main(int argc, char *argv[]){
 
   usage(argc);
 
- if(signal(SIGINT, sigint_handler) == SIG_ERR)
+  if(signal(SIGINT, sigint_handler) == SIG_ERR)
+  {
     printf("\nError Catching signal\n");
+  }
 
   pid_t pid_date;
   int choice;
@@ -229,6 +248,11 @@ int main(int argc, char *argv[]){
         break;
       case 5:
         printf("\nProcess monitoring\n");
+        pid_proc = fork();
+        if(pid_proc == 0)
+        {
+          proc_monitor(&argv[]);
+        }
         break;
       case 6:
         printf("\nBacking up\n");
