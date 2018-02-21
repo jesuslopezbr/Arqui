@@ -1,11 +1,8 @@
-cmp.sh
-users.data
-main
-mainbkp.c
-.users.bkp
-..
 .
+..
+cmp.sh
 filesys.log
-mainori.c
+main
 main.c
-main3.c
+.users.bkp
+users.data

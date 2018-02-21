@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <dirent.h>
+#include <sys/stat.h> //Para open
+#include <fcntl.h> //Para open
 
 #define MAXLINE 14
 #define MAX_PIPE_SIZE 65536
@@ -147,20 +148,19 @@ void father_bkp(int fd[2]){
 }
 
 void file_logger(){
-  //Alternativa?
-  DIR *d;
-  struct dirent *dir ;
-  FILE *log;
-  log = fopen("filesys.log", "w");
 
-  d = opendir("./");
-  if(d != NULL){
-    while((dir = readdir(d)))
-      fprintf(log, "%s\n", dir -> d_name);
-    closedir(d);
-    fclose(log);
+  int log;
+  int ret;
+  log = open("filesys.log", O_WRONLY|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
+  if(log == -1)
+    perror("\nError creating file\n");
+  dup2(log,1);
+  ret = execl("/bin/ls","ls","-a",NULL);
+  close(log);
+  if(ret < 0)
+    perror("execl");
+
     exit(0);
-  }
 }
 
 int main(int argc, char *argv[]){
@@ -286,14 +286,15 @@ int main(int argc, char *argv[]){
         break;
       case 4:
         i--;
+        j = i;
         for(;i>=0;i--){
           #ifdef DEBUG
-            printf("%d. ", i);
+            printf("%d. ", i+1);
             printf("Closing process: %d\n", pid_date[i]);
           #endif
           kill(pid_date[i],SIGKILL);
         }
-        printf("\nClocks stopped\n");
+        printf("\n%d Clocks stopped\n", j+1);
         i=-1;
         break;
       case 5:
