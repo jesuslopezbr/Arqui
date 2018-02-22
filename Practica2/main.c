@@ -140,7 +140,7 @@ void file_logger(){
 
   int log;
   int ret;
-  log = open("filesys.log", O_WRONLY|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
+  log = open("filesys.log", O_WRONLY|O_CREAT,S_IRUSR|S_IWUSR);
   if(log == -1)
     perror("\nError creating file\n");
   dup2(log,1);
