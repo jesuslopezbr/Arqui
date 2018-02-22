@@ -9,8 +9,6 @@
 #include <errno.h>  //Para la variable errno
 #include <signal.h>
 
-#define MAXLINE 14
-#define MAX_PIPE_SIZE 65536
 
 int go = 0;
 
@@ -42,7 +40,7 @@ void sigint_handler(int signo){
 /*Si recibe señal, crea nieto y imprime UTC o CET dependiendo
 de time_type*/
 void clock_activation(){
-  int time_type, ret;
+  int time_type = 0, ret = 0;
   pid_t pid_time;
 
     do{
@@ -79,7 +77,7 @@ void editor()
   exit(0);
 }
 
-void child_alt(int fd[2]){
+void child_bkp(int fd[2]){
   //HIJO
   int n;
   char line1;
@@ -94,47 +92,40 @@ void child_alt(int fd[2]){
         fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
         exit(-1);
       }
-
-
     }
-
-
   fclose(f_bkp);
+  close(fd[0]);
   printf("Closed\n");
   exit(0);
 }
 
-void father_alt(int fd[2]){
+void father_bkp(int fd[2]){
   //PADRE
   char *line2 = NULL;
   FILE* fb = fopen("users.data", "rb");
 
   if(fb != NULL)
   {
-      /*if(fgets(line2, MAXLINE, fb) != NULL)
+    fseek (fb, 0, SEEK_END);
+    int length = ftell (fb);
+    printf("This is the length %d\n", length);
+    if(length < 0)
+    {
+      fprintf(stderr, "\nFather: F_Tell Failed\n\n");
+      exit(-1);
+    }
+    fseek (fb, 0, SEEK_SET);
+    line2 = malloc (length);
+    if(line2 != NULL)
+    {
+      int fr = fread (line2, 1, length, fb);
+      if(fr < 0)
       {
-        puts(line2);
-      }*/
-      fseek (fb, 0, SEEK_END);
-      int length = ftell (fb);
-      printf("This is the length %d\n", length);
-      if(length < 0)
-      {
-        fprintf(stderr, "\nFather: F_Tell Failed\n\n");
+        fprintf(stderr, "\nFather: F_Read Failed\n\n");
         exit(-1);
       }
-      fseek (fb, 0, SEEK_SET);
-      line2 = malloc (length);
-      if(line2 != NULL)
-      {
-        int fr = fread (line2, 1, length, fb);
-        if(fr < 0)
-        {
-          fprintf(stderr, "\nFather: F_Read Failed\n\n");
-          exit(-1);
-        }
-      }
-      fclose (fb);
+    }
+    fclose (fb);
 
     close(fd[0]);
     write(fd[1], line2, length);
@@ -142,13 +133,8 @@ void father_alt(int fd[2]){
     free(line2);
   }
   else
-  {
-      perror("\nFather: Error opening file\n\n");
-  }
-
-
+    perror("\nFather: Error opening file\n\n");
 }
-
 
 void file_logger(){
 
@@ -163,7 +149,7 @@ void file_logger(){
   if(ret < 0)
     perror("execl");
 
-    exit(0);
+  exit(0);
 }
 
 void proc_monitor(int n)
@@ -183,8 +169,8 @@ void proc_monitor(int n)
       }
       //Hijo ejecuta ps y exec
       //Redireccionar la salida estandar al fichero abierto
-  	  dup2(fd,1);
-      close(fd);  //Cerramos el fichero en el hijo //Para que en vez de imprimir por pantalla, escriba en el fichero
+  	  dup2(fd,1);//Para que en vez de imprimir por pantalla, escriba en el fichero
+      close(fd);  //Cerramos el fichero en el hijo
       ret = execl("/bin/ps","ps","r",NULL);
       if(ret < 0)
       {
@@ -206,15 +192,11 @@ int main(int argc, char *argv[]){
   pid_t pid_date[50], pid_file, pid_backup, pid_editor, pid_proc;
   int choice, ex = 1,result = 0, i = 0, j = 0, n;
   int fd[2], status;
-  int monitor_stat = 0;
+  int monitor_stat = 0, file_stat = 0, editor_stat = 0, backup_stat = 0;
   pid_t check;
 
   do{
     do{
-      printf("%d\n", pid_file);
-      printf("%d\n", pid_backup);
-      printf("%d\n", pid_editor);
-      printf("%d\n", pid_proc);
       menu();
 
       result = scanf("%d", &choice);
@@ -231,35 +213,40 @@ int main(int argc, char *argv[]){
           kill(pid_date[i],SIGKILL);
           printf("%d reporting: Terminating\n", pid_date[i]);
         }
-        printf("%d value\n", pid_file);
-        check = waitpid(pid_file, &status, WNOHANG);
-        if(check == 0){
-          kill(pid_file,SIGKILL);
-          printf("%d reporting: Terminating\n", pid_file);
+        if(file_stat == 1){
+          check = waitpid(pid_file, &status, WNOHANG);
+          if(check == 0){
+            kill(pid_file,SIGKILL);
+            printf("%d reporting: Terminating\n", pid_file);
+          }
         }
-        check = waitpid(pid_editor, &status, WNOHANG);
-        if(check == 0){
-          kill(pid_editor,SIGKILL);
-          printf("%d reporting: Terminating\n", pid_editor);
+        if(editor_stat == 1){
+          check = waitpid(pid_editor, &status, WNOHANG);
+          if(check == 0){
+            kill(pid_editor,SIGKILL);
+            printf("%d reporting: Terminating\n", pid_editor);
+          }
         }
-        check = waitpid(pid_backup, &status, WNOHANG);
-        if(check == 0){
-          kill(pid_backup,SIGKILL);
-          printf("%d reporting: Terminating\n", pid_backup);
+        if(backup_stat == 1){
+          check = waitpid(pid_backup, &status, WNOHANG);
+          if(check == 0){
+            kill(pid_backup,SIGKILL);
+            printf("%d reporting: Terminating\n", pid_backup);
+          }
         }
-        check = waitpid(pid_proc, &status, WNOHANG);
-        if(check == 0){
-          kill(pid_proc,SIGKILL);
-          printf("%d reporting: Terminating\n", pid_proc);
+        if(monitor_stat == 1){
+          check = waitpid(pid_proc, &status, WNOHANG);
+          if(check == 0){
+            kill(pid_proc,SIGKILL);
+            printf("%d reporting: Terminating\n", pid_proc);
+          }
         }
-
-
         printf("Main process reporting: Terminating\n");
         break;
       case 1:
         printf("\nEditing user data\n");
         pid_editor = fork();
-
+        editor_stat = 1;
         if(pid_editor < 0)
         {
           fprintf(stderr, "\nEditor_Fork Failed\n");
@@ -273,6 +260,7 @@ int main(int argc, char *argv[]){
       case 2:
         printf("\nMonitoring file system\n");
         pid_file = fork();
+        file_stat = 1;
         if(pid_file < 0)
         {
           fprintf(stderr, "\nFile_Fork Failed\n");
@@ -334,8 +322,9 @@ int main(int argc, char *argv[]){
             proc_monitor(n);
           }else{
             monitor_stat = 1;
-            printf("\nProcess monitor already activated\n");
           }
+          if(monitor_stat == 1)
+            printf("\nProcess monitor already activated\n");
         }
         break;
       case 6:
@@ -347,6 +336,7 @@ int main(int argc, char *argv[]){
           exit(-1);
         }
         pid_backup = fork();
+        backup_stat = 1;
 
         if(pid_backup < 0)
         {
@@ -355,9 +345,9 @@ int main(int argc, char *argv[]){
         }
 
         if(pid_backup == 0)
-          child_alt(fd);
+          child_bkp(fd);
         else
-          father_alt(fd);
+          father_bkp(fd);
         break;
       case 7:
         printf("\nChecking live processes...\n");
@@ -368,26 +358,33 @@ int main(int argc, char *argv[]){
           printf("%d reporting: Alive\n", pid_date[j-1]);
           result = 1;
         }
-
-        check = kill(pid_file, SIGCHLD);
-        if(check == 0 && pid_file != 0){
-          printf("%d reporting: Alive\n", pid_file);
-          result += 1;
+        if(file_stat == 1){
+          check = waitpid(pid_file, &status, WNOHANG);
+          if(check == 0 && pid_file != 0){
+            printf("%d reporting: Alive\n", pid_file);
+            result += 1;
+          }
         }
-        check = waitpid(pid_editor, &status, WNOHANG);
-        if(check == 0 && pid_editor != 0){
-          printf("%d reporting: Alive\n", pid_editor);
-          result += 1;
+        if(editor_stat == 1){
+          check = waitpid(pid_editor, &status, WNOHANG);
+          if(check == 0 && pid_editor != 0){
+            printf("%d reporting: Alive\n", pid_editor);
+            result += 1;
+          }
         }
-        check = waitpid(pid_backup, &status, WNOHANG);
-        if(check == 0 && pid_backup != 0){
-          printf("%d reporting: Alive\n", pid_backup);
-          result += 1;
+        if(backup_stat == 1){
+          check = waitpid(pid_backup, &status, WNOHANG);
+          if(check == 0 && pid_backup != 0){
+            printf("%d reporting: Alive\n", pid_backup);
+            result += 1;
+          }
         }
-        check = waitpid(pid_proc, &status, WNOHANG);
-        if(check == 0 && pid_proc != 0){
-          printf("%d reporting: Alive\n", pid_proc);
-          result += 1;
+        if(monitor_stat == 1){
+          check = waitpid(pid_proc, &status, WNOHANG);
+          if(check == 0 && pid_proc != 0){
+            printf("%d reporting: Alive\n", pid_proc);
+            result += 1;
+          }
         }
         if(result == 0)
           printf("No process running\n");
