@@ -1,10 +1,13 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>  //Estandar input outut(printf, scanf y fprintf)
+#include <stdlib.h> //Estandar library(exit y malloc)
+#include <sys/types.h> //Para las funciones fork, open y wait, y el tipo pid_t
+#include <sys/stat.h>  //Para open
+#include <sys/wait.h>	//Para wait
+#include <fcntl.h>  //Para open
+#include <unistd.h> //Para fork,close, execl, dup2 y sleep
+#include <string.h>  //Para la funcion strerror
+#include <errno.h>  //Para la variable errno
 #include <signal.h>
-#include <sys/wait.h>
-#include <sys/stat.h> //Para open
-#include <fcntl.h> //Para open
 
 #define MAXLINE 14
 #define MAX_PIPE_SIZE 65536
@@ -76,49 +79,51 @@ void editor()
   exit(0);
 }
 
-//HIJO que recive del pipe y escribe a archivo .users.bkp
-void child_bkp(int fd[2])
-{
+void child_alt(int fd[2]){
+  //HIJO
   int n;
-    /*Alternativa a preguntar, recibir de pipe
-    caracter a caracter y escribir en .users.bkp*/
-    char *line1 = (char *)malloc(MAX_PIPE_SIZE);
-    close(fd[1]);
+  char line1;
+  FILE* f_bkp = fopen(".users.bkp", "w");
+  close(fd[1]);
 
-    n = read(fd[0], line1, MAX_PIPE_SIZE);
-    if(n < 0)
-    {
-      fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
-      exit(-1);
+    while((n = read(fd[0],&line1, sizeof(char))) != 0){
+
+      fwrite(&line1, sizeof(char), 1, f_bkp);
+      if(n < 0)
+      {
+        fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+        exit(-1);
+      }
+
+
     }
-    #ifdef DEBUG
-      printf("Child reading from pipe: \n%s\n", line1);
-    #endif
-    FILE* f_bkp = fopen(".users.bkp", "w");
-    fputs(line1, f_bkp);
-    fclose(f_bkp);
-    free(line1);
-    exit(0);
+
+
+  fclose(f_bkp);
+  printf("Closed\n");
+  exit(0);
 }
 
-//PADRE que lee archvo users.data y pasa a HIJO por pipe
-void father_bkp(int fd[2]){
+void father_alt(int fd[2]){
+  //PADRE
   char *line2 = NULL;
-  int length;
-  FILE* fb = fopen("users.data", "r");
+  FILE* fb = fopen("users.data", "rb");
 
   if(fb != NULL)
   {
-      /*Alternativa a preguntar, leer y mandar a pipe
-      caracter a caracter*/
-      fseek (fb, 0, SEEK_END);//Buscar longitud archivo
-      length = ftell (fb);
+      /*if(fgets(line2, MAXLINE, fb) != NULL)
+      {
+        puts(line2);
+      }*/
+      fseek (fb, 0, SEEK_END);
+      int length = ftell (fb);
+      printf("This is the length %d\n", length);
       if(length < 0)
       {
         fprintf(stderr, "\nFather: F_Tell Failed\n\n");
         exit(-1);
       }
-      fseek (fb, 0, SEEK_SET);//Poner lectura desde el principio
+      fseek (fb, 0, SEEK_SET);
       line2 = malloc (length);
       if(line2 != NULL)
       {
@@ -130,22 +135,20 @@ void father_bkp(int fd[2]){
         }
       }
       fclose (fb);
-      #ifdef DEBUG
-        printf("Father writing to pipe: \n%s\n", line2);
-      #endif
-      close(fd[0]);
-      write(fd[1], line2, length);
-      close(fd[1]);
-      free(line2);
 
-      wait(NULL);
-      printf("\nBackup Hecho\n");
+    close(fd[0]);
+    write(fd[1], line2, length);
+    close(fd[1]);
+    free(line2);
   }
   else
   {
       perror("\nFather: Error opening file\n\n");
   }
+
+
 }
+
 
 void file_logger(){
 
@@ -163,6 +166,36 @@ void file_logger(){
     exit(0);
 }
 
+void proc_monitor(int n)
+{
+  int ret;
+  int fd;
+  pid_t pid_ps;
+
+  while(1)
+  {
+    pid_ps = fork();
+    if(pid_ps == 0){
+      fd = open("process.log",O_WRONLY|O_CREAT,S_IRUSR|S_IWUSR);
+      if(fd == -1)
+      {
+        printf("%s",strerror(errno));
+      }
+      //Hijo ejecuta ps y exec
+      //Redireccionar la salida estandar al fichero abierto
+  	  dup2(fd,1);
+      close(fd);  //Cerramos el fichero en el hijo //Para que en vez de imprimir por pantalla, escriba en el fichero
+      ret = execl("/bin/ps","ps","r",NULL);
+      if(ret < 0)
+      {
+    	  perror("execl");
+      }
+    }
+    else
+    sleep(n);
+  }
+}
+
 int main(int argc, char *argv[]){
 
   usage(argc);
@@ -171,13 +204,17 @@ int main(int argc, char *argv[]){
     printf("\nError Catching signal\n");
 
   pid_t pid_date[50], pid_file, pid_backup, pid_editor, pid_proc;
-  int choice, ex = 1,result = 0, i = 0, j = 0;
+  int choice, ex = 1,result = 0, i = 0, j = 0, n;
   int fd[2], status;
+  int monitor_stat = 0;
   pid_t check;
 
   do{
     do{
-
+      printf("%d\n", pid_file);
+      printf("%d\n", pid_backup);
+      printf("%d\n", pid_editor);
+      printf("%d\n", pid_proc);
       menu();
 
       result = scanf("%d", &choice);
@@ -194,35 +231,27 @@ int main(int argc, char *argv[]){
           kill(pid_date[i],SIGKILL);
           printf("%d reporting: Terminating\n", pid_date[i]);
         }
+        printf("%d value\n", pid_file);
         check = waitpid(pid_file, &status, WNOHANG);
-      //  if(check == -1)
-      //    fprintf(stderr, "\nError checking %d status\n\n", pid_file);
         if(check == 0){
           kill(pid_file,SIGKILL);
           printf("%d reporting: Terminating\n", pid_file);
         }
         check = waitpid(pid_editor, &status, WNOHANG);
-        //if(check == -1)
-        //  fprintf(stderr, "\nError checking %d status\n\n", pid_editor);
         if(check == 0){
           kill(pid_editor,SIGKILL);
           printf("%d reporting: Terminating\n", pid_editor);
         }
         check = waitpid(pid_backup, &status, WNOHANG);
-        //if(check == -1)
-        //  fprintf(stderr, "\nError checking %d status\n\n", pid_backup);
         if(check == 0){
           kill(pid_backup,SIGKILL);
           printf("%d reporting: Terminating\n", pid_backup);
         }
-
         check = waitpid(pid_proc, &status, WNOHANG);
-        //if(check == -1)
-        //  fprintf(stderr, "\nError checking %d status\n\n", pid_proc);
-        /*if(check == 0){
+        if(check == 0){
           kill(pid_proc,SIGKILL);
           printf("%d reporting: Terminating\n", pid_proc);
-        }*/
+        }
 
 
         printf("Main process reporting: Terminating\n");
@@ -239,11 +268,7 @@ int main(int argc, char *argv[]){
 
         if(pid_editor == 0)
           editor();
-        /*else
-          {
-            wait(NULL);
-            printf("\nusers.data: EDITADO\n");
-          }*/
+
         break;
       case 2:
         printf("\nMonitoring file system\n");
@@ -255,10 +280,7 @@ int main(int argc, char *argv[]){
         }
         if(pid_file == 0)
           file_logger();
-        /*else{
-          wait(NULL);
-          printf("\nFile logged\n");
-        }*/
+
         break;
       case 3:
 
@@ -298,7 +320,23 @@ int main(int argc, char *argv[]){
         i=-1;
         break;
       case 5:
-        printf("\nProcess monitoring\n");
+        if(monitor_stat == 0){
+          printf("\nProcess monitoring\n");
+          n = atoi(argv[1]);
+
+          if((pid_proc = fork()) < 0)
+          {
+            fprintf(stderr, "\nProc_Monitor_Fork Failed\n");
+            exit(-1);
+          }
+          if(pid_proc == 0)
+          {
+            proc_monitor(n);
+          }else{
+            monitor_stat = 1;
+            printf("\nProcess monitor already activated\n");
+          }
+        }
         break;
       case 6:
         printf("\nBacking up\n");
@@ -317,9 +355,9 @@ int main(int argc, char *argv[]){
         }
 
         if(pid_backup == 0)
-          child_bkp(fd);
+          child_alt(fd);
         else
-          father_bkp(fd);
+          father_alt(fd);
         break;
       case 7:
         printf("\nChecking live processes...\n");
@@ -331,7 +369,7 @@ int main(int argc, char *argv[]){
           result = 1;
         }
 
-        check = waitpid(pid_file, &status, WNOHANG);
+        check = kill(pid_file, SIGCHLD);
         if(check == 0 && pid_file != 0){
           printf("%d reporting: Alive\n", pid_file);
           result += 1;
@@ -346,11 +384,11 @@ int main(int argc, char *argv[]){
           printf("%d reporting: Alive\n", pid_backup);
           result += 1;
         }
-      /*  check = waitpid(pid_proc, &status, WNOHANG);
+        check = waitpid(pid_proc, &status, WNOHANG);
         if(check == 0 && pid_proc != 0){
           printf("%d reporting: Alive\n", pid_proc);
           result += 1;
-        }*/
+        }
         if(result == 0)
           printf("No process running\n");
 
@@ -363,3 +401,77 @@ int main(int argc, char *argv[]){
     }
   }while(ex == 1);
 }
+
+/*
+//HIJO que recive del pipe y escribe a archivo .users.bkp
+void child_bkp(int fd[2])
+{
+  int n;
+    Alternativa a preguntar, recibir de pipe
+    caracter a caracter y escribir en .users.bkp
+    char *line1 = NULL;
+    line1 = (char *)malloc(MAX_PIPE_SIZE);
+    close(fd[1]);
+
+    n = read(fd[0], line1, MAX_PIPE_SIZE);
+    if(n < 0)
+    {
+      fprintf(stderr, "\nSon: Read_Pipe Failed\n\n");
+      exit(-1);
+    }
+    #ifdef DEBUG
+      printf("Child reading from pipe: \n%s\n", line1);
+    #endif
+    FILE* f_bkp = fopen(".users.bkp", "w");
+    fputs(line1, f_bkp);
+    fclose(f_bkp);
+    free(line1);
+    exit(0);
+}
+
+//PADRE que lee archvo users.data y pasa a HIJO por pipe
+void father_bkp(int fd[2]){
+  char *line2 = NULL;
+  int length;
+  FILE* fb = fopen("users.data", "r");
+
+  if(fb != NULL)
+  {
+      Alternativa a preguntar, leer y mandar a pipe
+      caracter a caracter
+      fseek (fb, 0, SEEK_END);//Buscar longitud archivo
+      length = ftell (fb);
+      if(length < 0)
+      {
+        fprintf(stderr, "\nFather: F_Tell Failed\n\n");
+        exit(-1);
+      }
+      fseek (fb, 0, SEEK_SET);//Poner lectura desde el principio
+      line2 = malloc (length);
+      if(line2 != NULL)
+      {
+        int fr = fread (line2, 1, length, fb);
+        if(fr < 0)
+        {
+          fprintf(stderr, "\nFather: F_Read Failed\n\n");
+          exit(-1);
+        }
+      }
+      fclose (fb);
+      #ifdef DEBUG
+        printf("Father writing to pipe: \n%s\n", line2);
+      #endif
+      close(fd[0]);
+      write(fd[1], line2, length);
+      close(fd[1]);
+      free(line2);
+
+      wait(NULL);
+      printf("\nBackup Hecho\n");
+  }
+  else
+  {
+      perror("\nFather: Error opening file\n\n");
+  }
+}
+*/

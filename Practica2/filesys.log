@@ -3,6 +3,15 @@
 cmp.sh
 filesys.log
 main
+main2.c
+main3.c
+main.c
+process.log
+.users.bkp
+users.data
+
+main2.c
+main3.c
 main.c
 .users.bkp
 users.data
