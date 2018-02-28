@@ -98,7 +98,6 @@ void child_bkp(int fd[2]){ //Hijo
     }
   fclose(f_bkp); //Cerramos el fichero
   close(fd[0]); //Cerramos el descriptor de fichero de lectura
-  printf("Closed\n");
   exit(0);
 }
 
@@ -111,7 +110,6 @@ void father_bkp(int fd[2]){ //Padre
   {
     fseek (fb, 0, SEEK_END);
     int length = ftell (fb);
-    printf("This is the length %d\n", length);
     if(length < 0)
     {
       fprintf(stderr, "\nFather: F_Tell Failed\n\n");
