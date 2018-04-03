@@ -19,7 +19,7 @@
 //
 
 #include <StringService.h>
-//#include <IceUtil/PushDisableWarnings.h>
+#include <IceUtil/PushDisableWarnings.h>
 #include <Ice/LocalException.h>
 #include <Ice/ValueFactory.h>
 #include <Ice/OutgoingAsync.h>
