@@ -3,7 +3,7 @@
 
 using namespace std;
 using namespace UC3M;
-z
+
 int
 main(int argc, char* argv[]){
   int status = 0;
