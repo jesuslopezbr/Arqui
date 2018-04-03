@@ -5,16 +5,16 @@
 UC3M::StringServiceI::stringSize(const ::std::string& s,
                                  const Ice::Current& current)
 {
-    ::std::string ns(s);
-    return ns.length();
+    //::std::string ns(s);
+    return 0;
 }
 
 ::std::string
 UC3M::StringServiceI::toUpperCase(const ::std::string& s,
                                   const Ice::Current& current)
 {
-  ::std::string ns(s);
-  ::std::transform(ns.begin(), ns.end(), ns.begin(), ::toupper);
-  return ns;
+  //::std::string ns(s);
+  //::std::transform(ns.begin(), ns.end(), ns.begin(), ::toupper);
+  return "ns";
 
 }
