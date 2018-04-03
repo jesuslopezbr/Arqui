@@ -21,23 +21,23 @@
 #ifndef __StringService_h__
 #define __StringService_h__
 
-#include <libIceUtil.so.3.4.2/PushDisableWarnings.h>
-#include <libIce.so.3.4.2/ProxyF.h>
-#include <libIce.so.3.4.2/ObjectF.h>
-#include <libIce.so.3.4.2/ValueF.h>
-#include <libIce.so.3.4.2/Exception.h>
-#include <libIce.so.3.4.2/LocalObject.h>
-#include <libIce.so.3.4.2/StreamHelpers.h>
-#include <libIce.so.3.4.2/Comparable.h>
-#include <libIce.so.3.4.2/Proxy.h>
-#include <libIce.so.3.4.2/Object.h>
-#include <libIce.so.3.4.2/GCObject.h>
-#include <libIce.so.3.4.2/Value.h>
-#include <libIce.so.3.4.2/Incoming.h>
-#include <libIce.so.3.4.2/FactoryTableInit.h>
-#include <libIceUtil.so.3.4.2/ScopedArray.h>
-#include <libIce.so.3.4.2/Optional.h>
-#include <libIceUtil.so.3.4.2/UndefSysMacros.h>
+#include <IceUtil/PushDisableWarnings.h>
+#include <Ice/ProxyF.h>
+#include <Ice/ObjectF.h>
+#include <Ice/ValueF.h>
+#include <Ice/Exception.h>
+#include <Ice/LocalObject.h>
+#include <Ice/StreamHelpers.h>
+#include <Ice/Comparable.h>
+#include <Ice/Proxy.h>
+#include <Ice/Object.h>
+#include <Ice/GCObject.h>
+#include <Ice/Value.h>
+#include <Ice/Incoming.h>
+#include <Ice/FactoryTableInit.h>
+#include <IceUtil/ScopedArray.h>
+#include <Ice/Optional.h>
+#include <IceUtil/UndefSysMacros.h>
 
 #ifndef ICE_IGNORE_VERSION
 #   if ICE_INT_VERSION / 100 != 307

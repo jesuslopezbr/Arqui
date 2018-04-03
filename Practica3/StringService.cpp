@@ -18,14 +18,14 @@
 // </auto-generated>
 //
 
-#include "StringService.h"
-#include <libIceUtil.so.3.4.2/PushDisableWarnings.h>
-#include <libIce.so.3.4.2/LocalException.h>
-#include <libIce.so.3.4.2/ValueFactory.h>
-#include <libIce.so.3.4.2/OutgoingAsync.h>
-#include <libIce.so.3.4.2/InputStream.h>
-#include <libIce.so.3.4.2/OutputStream.h>
-#include <libIceUtil.so.3.4.2/PopDisableWarnings.h>
+#include <StringService.h>
+#include <IceUtil/PushDisableWarnings.h>
+#include <Ice/LocalException.h>
+#include <Ice/ValueFactory.h>
+#include <Ice/OutgoingAsync.h>
+#include <Ice/InputStream.h>
+#include <Ice/OutputStream.h>
+#include <IceUtil/PopDisableWarnings.h>
 
 #if defined(_MSC_VER)
 #   pragma warning(disable:4458) // declaration of ... hides class member
