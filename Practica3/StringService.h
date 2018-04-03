@@ -21,7 +21,7 @@
 #ifndef __StringService_h__
 #define __StringService_h__
 
-#include <IceUtil/PushDisableWarnings.h>
+//#include <IceUtil/PushDisableWarnings.h>
 #include <Ice/ProxyF.h>
 #include <Ice/ObjectF.h>
 #include <Ice/ValueF.h>
