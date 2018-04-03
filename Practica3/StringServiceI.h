@@ -10,10 +10,10 @@ class StringServiceI : virtual public StringService
 {
 public:
 
-    virtual ::Ice::Int stringSize(const ::std::string&,
+    virtual ::Ice::Int stringSize(const ::std::string& s,
                                   const Ice::Current&);
 
-    virtual ::std::string toUpperCase(const ::std::string&,
+    virtual ::std::string toUpperCase(const ::std::string& s,
                                       const Ice::Current&);
 };
 
