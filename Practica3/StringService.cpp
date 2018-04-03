@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-#include "StringService.h"
+#include <StringService.h>
 #include <IceUtil/PushDisableWarnings.h>
 #include <Ice/LocalException.h>
 #include <Ice/ValueFactory.h>

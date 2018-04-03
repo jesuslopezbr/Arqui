@@ -1,7 +1,7 @@
 #ifndef __StringServiceI_h__
 #define __StringServiceI_h__
 
-#include "StringService.h"
+#include <StringService.h>
 
 namespace UC3M
 {
