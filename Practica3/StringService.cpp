@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-#include <StringService.h>
+#include "StringService.h"
 #include <Ice/LocalException.h>
 #include <Ice/ObjectFactory.h>
 #include <Ice/BasicStream.h>
@@ -330,13 +330,13 @@ IceDelegateD::UC3M::StringService::stringSize(const ::std::string& s, const ::Ic
     {
     public:
 
-        _DirectI(::Ice::Int& __result, const ::std::string& __p_s, const ::Ice::Current& __current) : 
+        _DirectI(::Ice::Int& __result, const ::std::string& __p_s, const ::Ice::Current& __current) :
             ::IceInternal::Direct(__current),
             _result(__result),
             _m_s(__p_s)
         {
         }
-        
+
         virtual ::Ice::DispatchStatus
         run(::Ice::Object* object)
         {
@@ -348,13 +348,13 @@ IceDelegateD::UC3M::StringService::stringSize(const ::std::string& s, const ::Ic
             _result = servant->stringSize(_m_s, _current);
             return ::Ice::DispatchOK;
         }
-        
+
     private:
-        
+
         ::Ice::Int& _result;
         const ::std::string& _m_s;
     };
-    
+
     ::Ice::Current __current;
     __initCurrent(__current, __UC3M__StringService__stringSize_name, ::Ice::Normal, __context);
     ::Ice::Int __result;
@@ -398,13 +398,13 @@ IceDelegateD::UC3M::StringService::toUpperCase(const ::std::string& s, const ::I
     {
     public:
 
-        _DirectI(::std::string& __result, const ::std::string& __p_s, const ::Ice::Current& __current) : 
+        _DirectI(::std::string& __result, const ::std::string& __p_s, const ::Ice::Current& __current) :
             ::IceInternal::Direct(__current),
             _result(__result),
             _m_s(__p_s)
         {
         }
-        
+
         virtual ::Ice::DispatchStatus
         run(::Ice::Object* object)
         {
@@ -416,13 +416,13 @@ IceDelegateD::UC3M::StringService::toUpperCase(const ::std::string& s, const ::I
             _result = servant->toUpperCase(_m_s, _current);
             return ::Ice::DispatchOK;
         }
-        
+
     private:
-        
+
         ::std::string& _result;
         const ::std::string& _m_s;
     };
-    
+
     ::Ice::Current __current;
     __initCurrent(__current, __UC3M__StringService__toUpperCase_name, ::Ice::Normal, __context);
     ::std::string __result;
@@ -594,7 +594,7 @@ UC3M::StringService::__readImpl(::IceInternal::BasicStream* __is)
     __is->endReadSlice();
 }
 
-void 
+void
 UC3M::__patch(StringServicePtr& handle, const ::Ice::ObjectPtr& v)
 {
     handle = ::UC3M::StringServicePtr::dynamicCast(v);

@@ -1,5 +1,5 @@
 
-#include <StringServiceI.h>
+#include "StringServiceI.h"
 
 ::Ice::Int
 UC3M::StringServiceI::stringSize(const ::std::string& s,
