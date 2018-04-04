@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-#include "StringService.h"
+#include <StringService.h>
 #include <Ice/LocalException.h>
 #include <Ice/ObjectFactory.h>
 #include <Ice/BasicStream.h>
