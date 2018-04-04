@@ -12,7 +12,7 @@ main(int argc, char* argv[]){
     ic = Ice::initialize(argc,argv);
     Ice::ObjectAdapterPtr adapter =
       ic -> createObjectAdapterWithEndpoints("asii_adapter",
-        "default -p 100000");
+        "default -p 10000");
     Ice::ObjectPtr object = new StringServiceI;
     adapter -> add(object, ic -> stringToIdentity("StringService"));
     adapter -> activate();
