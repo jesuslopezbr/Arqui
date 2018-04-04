@@ -12,5 +12,7 @@ UC3M::StringServiceI::stringSize(const ::std::string& s,
 UC3M::StringServiceI::toUpperCase(const ::std::string& s,
                                   const Ice::Current& current)
 {
-    return s;
+  ::std::string ns(s);
+  ::std::transform(ns.begin(), ns.end(), ns.begin(), ::toupper);
+  return ns;
 }
