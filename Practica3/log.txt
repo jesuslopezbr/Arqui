@@ -1,3 +1,3 @@
-c++ -I. -I/usr/include -c StringService.cpp server.cpp StringServiceI.cpp -lstdc++
+c++ -std=c++11 -I. -I/usr/include -c StringService.cpp server.cpp StringServiceI.cpp
 
-c++ -o server server.o StringService.o StringServiceI.o  -L/usr/lib/x86_64-linux-gnu -lpthread -lIce -lIceUtil
+c++ -o server server.o StringService.o StringServiceI.o  -L/usr/lib/x86_64-linux-gnu -lpthread -lIce -lIceUtil -lstdc++
