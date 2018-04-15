@@ -108,7 +108,7 @@ void cambiar_tarifa()
       cout << endl << "Nueva tarifa: ";
       cin >> tar_tar;
       datos_c1[i].tarifa = tar_tar;
-      cout << endl << "Tarifa actualizada";
+      cout << endl << "Tarifa actualizada" << endl;
     }
   }
 }
