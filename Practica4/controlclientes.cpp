@@ -37,6 +37,7 @@ void imprimir_datos_c1()
   }
   else
   {
+    cout << "Listado de clientes:" << endl;
     for(i=0; i<clientes; i++)
     {
       cout << i+1 << ": " << datos_c1[i].dni << " | " << datos_c1[i].nombre << " | " << datos_c1[i].tarifa << " | " << datos_c1[i].alta << " | " << datos_c1[i].descuento << endl;
@@ -72,6 +73,8 @@ void alta_usr()
     cout << "Descuento inicial: ";
     cin >> datos_c1[clientes2].descuento;
     clientes++;
+    cout << endl << "Solicitud de alta al servidor central en curso..." << endl;
+    cout << "Resultado: Usuario dado de alta" << endl;
   }
 }
 
@@ -108,9 +111,16 @@ void cambiar_tarifa()
       cout << endl << "Nueva tarifa: ";
       cin >> tar_tar;
       datos_c1[i].tarifa = tar_tar;
-      cout << endl << "Tarifa actualizada" << endl;
+      cout << endl << "Solicitud de cambio de tarifa al servidor central en curso..." << endl;
+      cout << "Resultado: Cambio de tarifa efectuado" << endl;
     }
   }
+}
+
+void terminar()
+{
+  cout << "Avisando a cliente de la terminacion!" << endl;
+  cout << "Servidor terminado!" << endl << endl;
 }
 
 int main (int argc, char *argv[])
@@ -140,7 +150,11 @@ int main (int argc, char *argv[])
       case 4:
         cambiar_tarifa();
         break;
+      case 5:
+        //actualizar_desc();
+        break;
       case 6:
+        terminar();
         ex = 1;
         break;
       default:
