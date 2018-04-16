@@ -24,7 +24,7 @@ void menu()
   cout << endl << "[2] Alta de usuario";
   cout << endl << "[3] Baja de usuario";
   cout << endl << "[4] Cambio de tarifa";
-  cout << endl << "[4] Actualizar descuentos";
+  cout << endl << "[5] Actualizar descuentos";
   cout << endl << "[6] Terminar" << endl;
   cout << endl << "Opcion: ";
 }
