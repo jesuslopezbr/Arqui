@@ -117,6 +117,11 @@ void cambiar_tarifa()
   }
 }
 
+void actualizar_desc()
+{
+  
+}
+
 void terminar()
 {
   cout << "Avisando a cliente de la terminacion!" << endl;
@@ -151,7 +156,7 @@ int main (int argc, char *argv[])
         cambiar_tarifa();
         break;
       case 5:
-        //actualizar_desc();
+        actualizar_desc();
         break;
       case 6:
         terminar();
