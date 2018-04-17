@@ -1,5 +1,9 @@
 #include <string.h>
+#include <pthread.h>
+#include <stdlib.h>
+
 #include <iostream>
+
 using namespace std;
 
 #define MAX_CLIENTES 50
@@ -105,8 +109,7 @@ void baja_usr()
   unsigned baja;
   cout << endl << "Indique el DNI del usuario que quiere dar de baja: ";
   cin >> baja;
-  for(i=0; i<clientes; i++)
-  {
+  for(i=0; i<clientes; i++){
     if(baja == datos_c1[i].dni)
     {
       datos_c1[i]=datos_c1[i+1];
@@ -141,6 +144,7 @@ void cambiar_tarifa()
 
 void actualizar_desc()
 {
+  //phtread_mutex_lock(&clients_mutex);
   for(i=0; i<clientes; i++)
   {
       if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
@@ -158,6 +162,8 @@ void actualizar_desc()
         datos_c1[i].descuento = 30;
       }
     }
+    //phtread_mutex_unlock(&clients_mutex);
+    pthread_exit(NULL);
 }
 
 void terminar()
@@ -169,7 +175,13 @@ void terminar()
 int main (int argc, char *argv[])
 {
   int ex = 0, opcion = 0;
-  int n = argv[1];
+  phread_t h_desc;
+  int ch;
+  int n = atoi(argv[1]);
+
+  pthread_mutex_t clients_mutex;
+  phtread_mutex_init(&clients_mutex,NULL);
+
 
   do{
 
@@ -181,7 +193,7 @@ int main (int argc, char *argv[])
       if(cin.fail())
         clear_fail_state();
     }while(opcion < 1 || opcion > 6);
-
+    phtread_mutex_lock(&clients_mutex);
     switch(opcion)
     {
       case 1:
@@ -197,10 +209,15 @@ int main (int argc, char *argv[])
         cambiar_tarifa();
         break;
       case 5:
-          actualizar_desc(n);
+        ch = phread_create(&h_desc, NULL, actualizar_desc, (void *)n);
+        if(ch){
+          printf("ERROR; return code from pthread_create() is %d\n", ch);
+          exit(-1);
+        }
 
         break;
       case 6:
+        pthread_exit(NULL);
         terminar();
         ex = 1;
         break;
@@ -208,7 +225,7 @@ int main (int argc, char *argv[])
         break;
     }
 
-
+    phtread_mutex_unlock(&clients_mutex);
 
 
   }while(ex == 0);
