@@ -3,10 +3,12 @@
 #include <stdlib.h>
 
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
 #define MAX_CLIENTES 50
+pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int i = 0, clientes = 0;
 
@@ -142,9 +144,11 @@ void cambiar_tarifa()
   }
 }
 
-void actualizar_desc()
+void *actualizar_desc(void * time)
 {
-  //phtread_mutex_lock(&clients_mutex);
+  int sle = atoi(reinterpret_cast<char*>(time));
+  cout << sle << " seconds";
+  pthread_mutex_lock(&clients_mutex);
   for(i=0; i<clientes; i++)
   {
       if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
@@ -162,7 +166,7 @@ void actualizar_desc()
         datos_c1[i].descuento = 30;
       }
     }
-    //phtread_mutex_unlock(&clients_mutex);
+    pthread_mutex_unlock(&clients_mutex);
     pthread_exit(NULL);
 }
 
@@ -175,12 +179,13 @@ void terminar()
 int main (int argc, char *argv[])
 {
   int ex = 0, opcion = 0;
-  phread_t h_desc;
+  pthread_t h_desc;
   int ch;
-  int n = atoi(argv[1]);
+  int time = atoi(argv[1]);
+  //cout << time;
 
-  pthread_mutex_t clients_mutex;
-  phtread_mutex_init(&clients_mutex,NULL);
+  // pthread_mutex_t clients_mutex;
+  //pthread_mutex_init(&clients_mutex,NULL);
 
 
   do{
@@ -193,7 +198,7 @@ int main (int argc, char *argv[])
       if(cin.fail())
         clear_fail_state();
     }while(opcion < 1 || opcion > 6);
-    phtread_mutex_lock(&clients_mutex);
+    pthread_mutex_lock(&clients_mutex);
     switch(opcion)
     {
       case 1:
@@ -209,7 +214,7 @@ int main (int argc, char *argv[])
         cambiar_tarifa();
         break;
       case 5:
-        ch = phread_create(&h_desc, NULL, actualizar_desc, (void *)n);
+        ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
         if(ch){
           printf("ERROR; return code from pthread_create() is %d\n", ch);
           exit(-1);
@@ -225,7 +230,7 @@ int main (int argc, char *argv[])
         break;
     }
 
-    phtread_mutex_unlock(&clients_mutex);
+    pthread_mutex_unlock(&clients_mutex);
 
 
   }while(ex == 0);
