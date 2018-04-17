@@ -220,6 +220,7 @@ int main (int argc, char *argv[])
 
         break;
       case 6:
+        pthread_join(h_desc,NULL);
         pthread_exit(NULL);
         terminar();
         ex = 1;
