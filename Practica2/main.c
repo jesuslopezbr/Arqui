@@ -15,7 +15,7 @@ int go = 0; //Variable global para controlar la señal CTRL-C
 //Uso para la ejecución
 void usage(int argc){
   if(argc != 2){
-    fprintf(stderr, "Usage: <monitoring_time_interval>\n" );
+    fprintf(stderr, "\nUsage: <monitoring_time_interval>\n" );
     exit(-1);
   }
 }
@@ -191,14 +191,17 @@ int main(int argc, char *argv[]){
  if(signal(SIGINT, sigint_handler) == SIG_ERR) //Error en CTRL-C
     printf("\nError Catching signal\n");
 
+
   pid_t pid_date[50], pid_file, pid_backup, pid_editor, pid_proc;
   int choice, ex = 1,result = 0, i = 0, j = 0, n;
   int fd[2], status;
   int monitor_stat = 0, file_stat = 0, editor_stat = 0, backup_stat = 0;
   pid_t check;
 
-  do{
-    do{
+  do
+  {
+    do
+    {
       menu();
 
       result = scanf("%d", &choice); //Esperar a opción que elija el usuario
