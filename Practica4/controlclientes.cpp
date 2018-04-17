@@ -31,7 +31,7 @@ void menu()
 
 void imprimir_datos_c1()
 {
-  if(datos_c1[0].dni == NULL)
+  if(datos_c1[0].dni == 0)
   {
     cout << endl << "No hay clientes dados de alta" << endl;
   }
@@ -45,6 +45,15 @@ void imprimir_datos_c1()
   }
 }
 
+void clear_fail_state(){
+    cout << "ERROR -- You did not enter an integer";
+
+    // get rid of failure state
+    cin.clear();
+    cin.ignore(80, '\n');
+
+}
+
 void alta_usr()
 {
   unsigned alta;
@@ -52,15 +61,28 @@ void alta_usr()
   int a = 0;
   cout << endl << "DNI del usuario: ";
   cin >> alta;
+
+  if(cin.fail()){
+    clear_fail_state();
+    a=1;
+  }
+
+  if(alta < 10000000 && alta > 99999999){
+    cout << endl << "No se puede tener un menor de 8 caracteres DNI: " << alta << endl;
+    a  = 1;
+  }
+
   for(i=0; i<clientes; i++)
   {
-    if(alta == datos_c1[i].dni)
-    {
-      cout << endl << "El usuario con DNI: " << alta << " ya figura en el sistema" << endl;
-      a = 1;
-      break;
-    }
+      if(alta == datos_c1[i].dni){
+        cout << endl << "El usuario con DNI: " << alta << " ya figura en el sistema" << endl;
+        a = 1;
+        break;
+      }
+
+
   }
+
   if(a == 0)
   {
     datos_c1[clientes2].dni = alta;
@@ -119,7 +141,23 @@ void cambiar_tarifa()
 
 void actualizar_desc()
 {
-  
+  for(i=0; i<clientes; i++)
+  {
+      if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
+        if(datos_c1[i].alta < 2008)
+          datos_c1[i].descuento = 30;
+        else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
+          datos_c1[i].descuento = 40;
+        else if(datos_c1[i].alta > 2012)
+          datos_c1[i].descuento = 25;
+        else
+          datos_c1[i].descuento = 0;
+      }else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25){
+          datos_c1[i].descuento = 25;
+      }else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30){
+        datos_c1[i].descuento = 30;
+      }
+    }
 }
 
 void terminar()
@@ -131,6 +169,7 @@ void terminar()
 int main (int argc, char *argv[])
 {
   int ex = 0, opcion = 0;
+  int n = argv[1];
 
   do{
 
@@ -139,6 +178,8 @@ int main (int argc, char *argv[])
       menu();
       cin >> opcion;
       cout << endl;
+      if(cin.fail())
+        clear_fail_state();
     }while(opcion < 1 || opcion > 6);
 
     switch(opcion)
@@ -156,7 +197,8 @@ int main (int argc, char *argv[])
         cambiar_tarifa();
         break;
       case 5:
-        actualizar_desc();
+          actualizar_desc(n);
+
         break;
       case 6:
         terminar();
@@ -165,6 +207,9 @@ int main (int argc, char *argv[])
       default:
         break;
     }
+
+
+
 
   }while(ex == 0);
 
