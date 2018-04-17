@@ -146,8 +146,7 @@ void cambiar_tarifa()
 
 void *actualizar_desc(void * time)
 {
-  int sle = atoi(reinterpret_cast<char*>(time));
-  cout << sle << " seconds";
+  long sle = (long) time;
   pthread_mutex_lock(&clients_mutex);
   for(i=0; i<clientes; i++)
   {
@@ -181,8 +180,7 @@ int main (int argc, char *argv[])
   int ex = 0, opcion = 0;
   pthread_t h_desc;
   int ch;
-  int time = atoi(argv[1]);
-  //cout << time;
+  long time = atoi(argv[1]);
 
   // pthread_mutex_t clients_mutex;
   //pthread_mutex_init(&clients_mutex,NULL);
