@@ -52,12 +52,10 @@ void imprimir_datos_c1()
 }
 
 void clear_fail_state(){
-    cout << "ERROR -- You did not enter an integer";
-
+    cout << endl << "ERROR -- You did not enter an integer" << endl;
     // get rid of failure state
     cin.clear();
     cin.ignore(80, '\n');
-
 }
 
 void alta_usr()
@@ -70,12 +68,12 @@ void alta_usr()
 
   if(cin.fail()){
     clear_fail_state();
-    a=1;
+    a = 1;
   }
 
-  if(alta < 10000000 && alta > 99999999){
+  if(alta < 10000000 || alta > 99999999){
     cout << endl << "No se puede tener un menor de 8 caracteres DNI: " << alta << endl;
-    a  = 1;
+    a = 1;
   }
 
   for(i=0; i<clientes; i++)
@@ -85,8 +83,6 @@ void alta_usr()
         a = 1;
         break;
       }
-
-
   }
 
   if(a == 0)
@@ -214,10 +210,9 @@ int main (int argc, char *argv[])
       case 5:
         ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
         if(ch){
-          printf("ERROR; return code from pthread_create() is %d\n", ch);
+          printf("ERROR: return code from pthread_create() is %d\n", ch);
           exit(-1);
         }
-
         break;
       case 6:
         pthread_join(h_desc,NULL);
