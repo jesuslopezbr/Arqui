@@ -253,7 +253,7 @@ int main (int argc, char *argv[])
     }while(opcion < 1 || opcion > 6);
 
     pthread_mutex_lock(&clients_mutex);
-    
+
     switch(opcion)
     {
       case 1:
@@ -287,9 +287,9 @@ int main (int argc, char *argv[])
         break;
     }
 
-  }while(ex == 0);
+    pthread_mutex_lock(&clients_mutex);
 
-  pthread_mutex_lock(&clients_mutex);
+  }while(ex == 0);
 
   return 0;
 }
