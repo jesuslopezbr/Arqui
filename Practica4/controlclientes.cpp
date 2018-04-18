@@ -1,6 +1,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
 
 #include <iostream>
 #include <stdio.h>
@@ -10,9 +12,12 @@ using namespace std;
 #define MAX_CLIENTES 50
 
 pthread_t h_desc, h_factura;
-pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t clients_mutex;
+pthread_mutex_t loop_mutex;
+pthread_cond_t cambio_desc;
 
 int i = 0, clientes = 0;
+int loop = 1;
 
 struct info_cliente
 {
@@ -144,89 +149,93 @@ void cambiar_tarifa()
 
 void *facturacion(void * time)
 {
-  long sle = (long) time;
+  long sle = (long) time * 1000000;
   int fact = 0;
-  pthread_mutex_lock(&clients_mutex);
-  for(i=0; i<clientes; i++)
-  {
-      if(datos_c1[i].tarifa == 'A'){
-        fact += 800;
-      }else if(datos_c1[i].tarifa == 'B'){
-        fact += 600;
-      }else if(datos_c1[i].tarifa == 'C'){
-        fact += 300;
-      }
-  }
-  cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
-  pthread_mutex_unlock(&clients_mutex);
+  do{
+    pthread_mutex_unlock(&loop_mutex);
+    fact = 0;
+
+    pthread_mutex_lock(&clients_mutex);
+    for(i=0; i<clientes; i++)
+    {
+        if(datos_c1[i].tarifa == 'A'){
+          fact += 800;
+        }else if(datos_c1[i].tarifa == 'B'){
+          fact += 600;
+        }else if(datos_c1[i].tarifa == 'C'){
+          fact += 300;
+        }
+    }
+    cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
+    pthread_cond_wait(&cambio_desc, &clients_mutex);
+    pthread_mutex_unlock(&clients_mutex);
+    usleep(sle);
+    pthread_mutex_lock(&loop_mutex);
+
+  }while(loop);
+  pthread_mutex_unlock(&loop_mutex);
+  printf("Closing h_fact\n");
   pthread_exit(NULL);
 }
 
 void *actualizar_desc(void * time)
 {
-  long sle = (long) time;
+  long sle = (long) time * 1000000;
   int ch;
-  pthread_mutex_lock(&clients_mutex);
-  for(i=0; i<clientes; i++)
-  {
-      if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
-        if(datos_c1[i].alta < 2008)
+
+  ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+  if(ch){
+    printf("ERROR: return code from pthread_create() is %d\n", ch);
+    exit(-1);
+  }
+  do{
+    pthread_mutex_unlock(&loop_mutex);
+
+    usleep(sle);
+    for(i=0; i<clientes; i++)
+    {
+        pthread_mutex_lock(&clients_mutex);
+        if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
+          if(datos_c1[i].alta < 2008)
+          {
+            datos_c1[i].descuento = 30;
+            pthread_cond_signal(&cambio_desc);
+          }
+          else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
+          {
+            datos_c1[i].descuento = 40;
+            pthread_cond_signal(&cambio_desc);
+          }
+          else if(datos_c1[i].alta > 2012)
+          {
+            datos_c1[i].descuento = 25;
+            pthread_cond_signal(&cambio_desc);
+          }
+          else
+          {
+            datos_c1[i].descuento = 0;
+            pthread_cond_signal(&cambio_desc);
+          }
+        }
+        else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
+        {
+            datos_c1[i].descuento = 25;
+            pthread_cond_signal(&cambio_desc);
+        }
+        else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30)
         {
           datos_c1[i].descuento = 30;
-          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-          if(ch){
-            printf("ERROR: return code from pthread_create() is %d\n", ch);
-            exit(-1);
-          }
+          pthread_cond_signal(&cambio_desc);
         }
-        else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
-        {
-          datos_c1[i].descuento = 40;
-          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-          if(ch){
-            printf("ERROR: return code from pthread_create() is %d\n", ch);
-            exit(-1);
-          }
-        }
-        else if(datos_c1[i].alta > 2012)
-        {
-          datos_c1[i].descuento = 25;
-          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-          if(ch){
-            printf("ERROR: return code from pthread_create() is %d\n", ch);
-            exit(-1);
-          }
-        }
-        else
-        {
-          datos_c1[i].descuento = 0;
-          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-          if(ch){
-            printf("ERROR: return code from pthread_create() is %d\n", ch);
-            exit(-1);
-          }
-        }
-      }
-      else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
-      {
-          datos_c1[i].descuento = 25;
-          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-          if(ch){
-            printf("ERROR: return code from pthread_create() is %d\n", ch);
-            exit(-1);
-          }
-      }
-      else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30)
-      {
-        datos_c1[i].descuento = 30;
-        ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-        if(ch){
-          printf("ERROR: return code from pthread_create() is %d\n", ch);
-          exit(-1);
-        }
-      }
-  }
-  pthread_mutex_unlock(&clients_mutex);
+        pthread_mutex_unlock(&clients_mutex);
+    }
+    pthread_mutex_lock(&loop_mutex);
+  }while(loop);
+
+  pthread_mutex_unlock(&loop_mutex);
+  pthread_cond_signal(&cambio_desc);
+  pthread_join(h_factura,NULL);
+  printf("Closing h_desc\n");
   pthread_exit(NULL);
 }
 
@@ -239,11 +248,13 @@ void terminar()
 int main (int argc, char *argv[])
 {
   int ex = 0, opcion = 0;
-  int ch;
+  int ch, thread_control = 0;
   long time = atoi(argv[1]);
 
   //pthread_mutex_t clients_mutex;
-  //pthread_mutex_init(&clients_mutex,NULL);
+  pthread_mutex_init(&clients_mutex,NULL);
+  pthread_mutex_init(&loop_mutex,NULL);
+  pthread_cond_init(&cambio_desc, NULL);
 
   do{
 
@@ -273,16 +284,29 @@ int main (int argc, char *argv[])
         cambiar_tarifa();
         break;
       case 5:
-        ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
-        if(ch){
-          printf("ERROR: return code from pthread_create() is %d\n", ch);
-          exit(-1);
+        if(thread_control == 0){
+          ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
+          cout << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
+          cout << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
+          thread_control = 1;
         }
         break;
       case 6:
+        pthread_mutex_unlock(&clients_mutex);
+
+        pthread_mutex_lock(&loop_mutex);
+        loop = 0;
+        pthread_mutex_unlock(&loop_mutex);
+
         pthread_join(h_desc,NULL);
-        pthread_join(h_factura,NULL);
+
         pthread_mutex_destroy(&clients_mutex);
+        pthread_mutex_destroy(&loop_mutex);
+        pthread_cond_destroy(&cambio_desc);
         pthread_exit(NULL);
         terminar();
         ex = 1;

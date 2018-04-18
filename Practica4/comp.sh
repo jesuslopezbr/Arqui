@@ -7,4 +7,4 @@ rm main controlclientes.o
 #PC
 gcc  -I. -c controlclientes.cpp
 gcc -o main controlclientes.o -lstdc++ -pthread
-./main 10
+./main 1
