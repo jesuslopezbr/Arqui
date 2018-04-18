@@ -206,14 +206,18 @@ void *actualizar_desc(void * time)
             exit(-1);
           }
         }
-      }else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25){
+      }
+      else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
+      {
           datos_c1[i].descuento = 25;
           ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
           if(ch){
             printf("ERROR: return code from pthread_create() is %d\n", ch);
             exit(-1);
           }
-      }else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30){
+      }
+      else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30)
+      {
         datos_c1[i].descuento = 30;
         ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
         if(ch){
@@ -221,7 +225,7 @@ void *actualizar_desc(void * time)
           exit(-1);
         }
       }
-    }
+  }
   pthread_mutex_unlock(&clients_mutex);
   pthread_exit(NULL);
 }
@@ -238,7 +242,7 @@ int main (int argc, char *argv[])
   int ch;
   long time = atoi(argv[1]);
 
-  // pthread_mutex_t clients_mutex;
+  //pthread_mutex_t clients_mutex;
   //pthread_mutex_init(&clients_mutex,NULL);
 
   do{
@@ -287,7 +291,7 @@ int main (int argc, char *argv[])
         break;
     }
 
-    pthread_mutex_lock(&clients_mutex);
+    pthread_mutex_unlock(&clients_mutex);
 
   }while(ex == 0);
 
