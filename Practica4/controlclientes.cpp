@@ -8,6 +8,8 @@
 using namespace std;
 
 #define MAX_CLIENTES 50
+
+pthread_t h_desc, h_factura;
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int i = 0, clientes = 0;
@@ -140,29 +142,88 @@ void cambiar_tarifa()
   }
 }
 
+void *facturacion(void * time)
+{
+  long sle = (long) time;
+  int fact = 0;
+  pthread_mutex_lock(&clients_mutex);
+  for(i=0; i<clientes; i++)
+  {
+      if(datos_c1[i].tarifa == 'A'){
+        fact += 800;
+      }else if(datos_c1[i].tarifa == 'B'){
+        fact += 600;
+      }else if(datos_c1[i].tarifa == 'C'){
+        fact += 300;
+      }
+  }
+  cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
+  pthread_mutex_unlock(&clients_mutex);
+  pthread_exit(NULL);
+}
+
 void *actualizar_desc(void * time)
 {
   long sle = (long) time;
+  int ch;
   pthread_mutex_lock(&clients_mutex);
   for(i=0; i<clientes; i++)
   {
       if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
         if(datos_c1[i].alta < 2008)
+        {
           datos_c1[i].descuento = 30;
+          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
+        }
         else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
+        {
           datos_c1[i].descuento = 40;
+          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
+        }
         else if(datos_c1[i].alta > 2012)
+        {
           datos_c1[i].descuento = 25;
+          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
+        }
         else
+        {
           datos_c1[i].descuento = 0;
+          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
+        }
       }else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25){
           datos_c1[i].descuento = 25;
+          ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+          if(ch){
+            printf("ERROR: return code from pthread_create() is %d\n", ch);
+            exit(-1);
+          }
       }else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30){
         datos_c1[i].descuento = 30;
+        ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
+        if(ch){
+          printf("ERROR: return code from pthread_create() is %d\n", ch);
+          exit(-1);
+        }
       }
     }
-    pthread_mutex_unlock(&clients_mutex);
-    pthread_exit(NULL);
+  pthread_mutex_unlock(&clients_mutex);
+  pthread_exit(NULL);
 }
 
 void terminar()
@@ -174,13 +235,11 @@ void terminar()
 int main (int argc, char *argv[])
 {
   int ex = 0, opcion = 0;
-  pthread_t h_desc;
   int ch;
   long time = atoi(argv[1]);
 
   // pthread_mutex_t clients_mutex;
   //pthread_mutex_init(&clients_mutex,NULL);
-
 
   do{
 
@@ -192,7 +251,9 @@ int main (int argc, char *argv[])
       if(cin.fail())
         clear_fail_state();
     }while(opcion < 1 || opcion > 6);
+
     pthread_mutex_lock(&clients_mutex);
+    
     switch(opcion)
     {
       case 1:
@@ -216,6 +277,8 @@ int main (int argc, char *argv[])
         break;
       case 6:
         pthread_join(h_desc,NULL);
+        pthread_join(h_factura,NULL);
+        pthread_mutex_destroy(&clients_mutex);
         pthread_exit(NULL);
         terminar();
         ex = 1;
@@ -224,10 +287,9 @@ int main (int argc, char *argv[])
         break;
     }
 
-    pthread_mutex_unlock(&clients_mutex);
-
-
   }while(ex == 0);
+
+  pthread_mutex_lock(&clients_mutex);
 
   return 0;
 }
