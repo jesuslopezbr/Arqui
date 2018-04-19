@@ -149,6 +149,7 @@ void cambiar_tarifa()
       datos_c1[i].tarifa = tar_tar;
       cout << endl << "Solicitud de cambio de tarifa al servidor central en curso..." << endl;
       cout << "Resultado: Cambio de tarifa efectuado" << endl;
+      datos_c1[i].descuento = 0;
     }
   }
 }
