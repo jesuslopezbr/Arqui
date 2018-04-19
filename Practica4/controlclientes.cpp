@@ -203,22 +203,22 @@ void *actualizar_desc(void * time)
     {
         pthread_mutex_lock(&clients_mutex);
         if(datos_c1[i].tarifa == 'A'){
-          if(datos_c1[i].alta < 2008)
+          if(datos_c1[i].alta < 2008 && datos_c1[i].descuento != 30)
           {
             datos_c1[i].descuento = 30;
             cambio = 1;
           }
-          else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
+          else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012 && datos_c1[i].descuento != 40)
           {
             datos_c1[i].descuento = 40;
             cambio = 1;
           }
-          else if(datos_c1[i].alta > 2012)
+          else if(datos_c1[i].alta > 2012 && datos_c1[i].descuento != 25)
           {
             datos_c1[i].descuento = 25;
             cambio = 1;
           }
-          else
+          else if(datos_c1[i].descuento != 0)
           {
             datos_c1[i].descuento = 0;
             cambio = 1;
