@@ -105,7 +105,6 @@ void alta_usr()
     clientes++;
     cout << endl << "Solicitud de alta al servidor central en curso..." << endl;
     cout << "Resultado: Usuario dado de alta" << endl;
-    pthread_cond_signal(&cambio_desc);
   }
 }
 
