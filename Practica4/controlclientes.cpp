@@ -202,7 +202,7 @@ void *actualizar_desc(void * time)
     for(i=0; i<clientes; i++)
     {
         pthread_mutex_lock(&clients_mutex);
-        if(datos_c1[i].tarifa == 'A' && datos_c1[i].descuento != 40){
+        if(datos_c1[i].tarifa == 'A'){
           if(datos_c1[i].alta < 2008)
           {
             datos_c1[i].descuento = 30;
