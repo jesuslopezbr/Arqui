@@ -150,7 +150,7 @@ void cambiar_tarifa()
   }
 }
 
-void *facturacion()
+void *facturacion(void * time)
 {
   int fact = 0;
   do{
