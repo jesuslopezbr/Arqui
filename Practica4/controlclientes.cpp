@@ -2,7 +2,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 
 #include <iostream>
 #include <stdio.h>
@@ -106,12 +105,14 @@ void alta_usr()
     clientes++;
     cout << endl << "Solicitud de alta al servidor central en curso..." << endl;
     cout << "Resultado: Usuario dado de alta" << endl;
+    pthread_cond_signal(&cambio_desc);
   }
 }
 
 void baja_usr()
 {
   unsigned baja;
+  int control = 0;
   cout << endl << "Indique el DNI del usuario que quiere dar de baja: ";
   cin >> baja;
   for(i=0; i<clientes; i++){
@@ -120,9 +121,11 @@ void baja_usr()
       datos_c1[i]=datos_c1[i+1];
       cout << endl << "El usuario con DNI: " << baja << " ha sido dado de baja" << endl;
       clientes--;
+      pthread_cond_signal(&cambio_desc);
+      control = 1;
     }
   }
-  if((datos_c1[i].dni != baja) && (i == clientes))
+  if(control == 0)
   {
     cout << endl << "El usuario con DNI: " << baja << " no esta dado de alta" << endl;
   }
@@ -156,20 +159,23 @@ void *facturacion(void * time)
     fact = 0;
 
     pthread_mutex_lock(&clients_mutex);
-    for(i=0; i<clientes; i++)
-    {
-        if(datos_c1[i].tarifa == 'A'){
-          fact += 800;
-        }else if(datos_c1[i].tarifa == 'B'){
-          fact += 600;
-        }else if(datos_c1[i].tarifa == 'C'){
-          fact += 300;
-        }
-    }
-    cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
     pthread_cond_wait(&cambio_desc, &clients_mutex);
+    pthread_mutex_lock(&loop_mutex);
+    if(loop){
+      for(i=0; i<clientes; i++)
+      {
+          if(datos_c1[i].tarifa == 'A'){
+            fact += 800;
+          }else if(datos_c1[i].tarifa == 'B'){
+            fact += 600;
+          }else if(datos_c1[i].tarifa == 'C'){
+            fact += 300;
+          }
+      }
+      cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
+    }
+    pthread_mutex_unlock(&loop_mutex);
     pthread_mutex_unlock(&clients_mutex);
-    usleep(sle);
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
@@ -182,6 +188,7 @@ void *actualizar_desc(void * time)
 {
   long sle = (long) time * 1000000;
   int ch;
+  int cambio = 0;
 
   ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
   if(ch){
@@ -189,6 +196,7 @@ void *actualizar_desc(void * time)
     exit(-1);
   }
   do{
+    cambio = 0;
     pthread_mutex_unlock(&loop_mutex);
 
     usleep(sle);
@@ -199,36 +207,40 @@ void *actualizar_desc(void * time)
           if(datos_c1[i].alta < 2008)
           {
             datos_c1[i].descuento = 30;
-            pthread_cond_signal(&cambio_desc);
+            cambio = 1;
           }
           else if(datos_c1[i].alta >= 2009 && datos_c1[i].alta <= 2012)
           {
             datos_c1[i].descuento = 40;
-            pthread_cond_signal(&cambio_desc);
+            cambio = 1;
           }
           else if(datos_c1[i].alta > 2012)
           {
             datos_c1[i].descuento = 25;
-            pthread_cond_signal(&cambio_desc);
+            cambio = 1;
           }
           else
           {
             datos_c1[i].descuento = 0;
-            pthread_cond_signal(&cambio_desc);
+            cambio = 1;
           }
         }
         else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
         {
             datos_c1[i].descuento = 25;
-            pthread_cond_signal(&cambio_desc);
+            cambio = 1;
         }
         else if(datos_c1[i].tarifa == 'C' && datos_c1[i].descuento != 30)
         {
           datos_c1[i].descuento = 30;
-          pthread_cond_signal(&cambio_desc);
+          cambio = 1;
         }
-        pthread_mutex_unlock(&clients_mutex);
+          pthread_mutex_unlock(&clients_mutex);
     }
+    if(cambio)
+      pthread_cond_signal(&cambio_desc);
+
+
     pthread_mutex_lock(&loop_mutex);
   }while(loop);
 
@@ -293,7 +305,8 @@ int main (int argc, char *argv[])
             exit(-1);
           }
           thread_control = 1;
-        }
+        }else
+          printf("Opción ya activada\n");
         break;
       case 6:
         pthread_mutex_unlock(&clients_mutex);
