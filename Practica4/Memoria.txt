@@ -1,8 +1,3 @@
-
-4. Explique c´omo ha conseguido resolver algunas de las principales cuestiones en C++)¡: creaci´on y
-gesti´on de arrays, strings (o char *), entrada/salida, etc.
-
-
 Compilación:
 
 No hemos tenido problemas compilando con estas dos lineas en las maquinas de Telemática.
@@ -21,15 +16,13 @@ Ejecución:
 
 Prototipos:
 
-En nuestros prototipos no ha hecho falta la entrada de variables ni el retorno de ninguna de ellas por el uso de variables globales. En los prototipos de facturacion y actualizar_desc usamos la entrada void time para actualizar el descuento cada cierto tiempo especificado
+En nuestros prototipos no ha hecho falta la entrada de variables ni el retorno de ninguna de ellas por el uso de variables globales. En los prototipos de facturación y actualizar_desc usamos la entrada void time para actualizar el descuento cada cierto tiempo especificado.
 
 void menu();
 
 void imprimir_datos_c1();
 
 void clear_fail_state();
-
-Este método sirve para limpiar la entrada de usuario cada vez que se introduzca un caracter inválido
 
 void alta_usr();
 
@@ -39,7 +32,7 @@ void cambiar_tarifa();
 
 void *actualizar_desc(void * time);
 
-void *facturacion(void * time);
+void *facturacion();
 
 void terminar();
 
@@ -56,3 +49,27 @@ Hemos usado estas librerias:
 - unistd.h para la llamada al sistema de usleep() que sirve para dormir el thread un tiempo determinado..
 - string.h para poder declarar strings dentro del programa en vez de usar char *.
 - iostream y stdio.h para la entrada y salida de pantalla.
+
+Creación y gestión de arrays:
+
+Hemos creado un array "datos_c1[MAX_CLIENTES]" de estructuras "info_cliente_t" con un tamaño máximo de 50 por ejemplo.
+
+Strings:
+
+Hemos declarado el nombre de la estructura como un "string" y no como un "char *" ya que en c++ con las librerias adecuadas se puede declarar de este manera.
+
+Entrada/Salida:
+
+Gracias a las librerias adecuadas, podemos usar cin para entrada de comando y cout para salida de comando.
+
+Descripción de los métodos:
+
+menu(): Muestra las opciones posibles a ejecutar con "cout".
+imprimir_datos_c1(): Saca por pantalla los datos de los usuarios dados de alta.
+alta_usr(): Se introduce la información de cada usuario en cada posición del array.
+baja_usr(): Se extrae la información del usuario de la posición que se elija con el dni.
+cambiar_tarifa(): Se modifica la tarifa por la introducida por el usuario del dni que especifique.
+*actualizar_desc(void * time): Se actualizan los descuentos cuando éstos son erróneos de forma periódica con un temporizador (time) y avisa a la hebra "h_factura" para recalcular la facturación.
+*facturacion(): Se recalcula la facturación cada vez que "h_desc" le avisa.
+terminar(): Imprime el mensaje de terminación.
+clear_fail_state(): Este método sirve para limpiar la entrada de usuario cada vez que se introduzca un caracter inválido.

@@ -150,14 +150,13 @@ void cambiar_tarifa()
   }
 }
 
-void *facturacion(void * time)
+void *facturacion()
 {
-  long sle = (long) time * 1000000;
+  //long sle = (long) time * 1000000;
   int fact = 0;
   do{
     pthread_mutex_unlock(&loop_mutex);
     fact = 0;
-
     pthread_mutex_lock(&clients_mutex);
     pthread_cond_wait(&cambio_desc, &clients_mutex);
     pthread_mutex_lock(&loop_mutex);
@@ -237,10 +236,10 @@ void *actualizar_desc(void * time)
         }
           pthread_mutex_unlock(&clients_mutex);
     }
-    if(cambio)
+    if(cambio){
       pthread_cond_signal(&cambio_desc);
-
-
+    }
+    
     pthread_mutex_lock(&loop_mutex);
   }while(loop);
 
