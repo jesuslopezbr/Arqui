@@ -235,10 +235,11 @@ void *actualizar_desc(void * time)
           datos_c1[i].descuento = 30;
           cambio = 1;
         }
-          pthread_mutex_unlock(&clients_mutex);
+
     }
     if(cambio)
       pthread_cond_signal(&cambio_desc);
+    pthread_mutex_unlock(&clients_mutex);
 
 
     pthread_mutex_lock(&loop_mutex);
