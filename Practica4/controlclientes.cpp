@@ -113,12 +113,16 @@ void baja_usr()
 {
   unsigned baja;
   int control = 0;
+  int j;
   cout << endl << "Indique el DNI del usuario que quiere dar de baja: ";
   cin >> baja;
   for(i=0; i<clientes; i++){
     if(baja == datos_c1[i].dni)
     {
-      datos_c1[i]=datos_c1[i+1];
+
+      for(j = i; j<clientes;j++){
+        datos_c1[j]=datos_c1[j+1];
+      }
       cout << endl << "El usuario con DNI: " << baja << " ha sido dado de baja" << endl;
       clientes--;
       pthread_cond_signal(&cambio_desc);
@@ -159,6 +163,7 @@ void *facturacion(void * time)
 
     pthread_mutex_lock(&clients_mutex);
     pthread_cond_wait(&cambio_desc, &clients_mutex);
+
     pthread_mutex_lock(&loop_mutex);
     if(loop){
       for(i=0; i<clientes; i++)
@@ -179,7 +184,6 @@ void *facturacion(void * time)
 
   }while(loop);
   pthread_mutex_unlock(&loop_mutex);
-  printf("Closing h_fact\n");
   pthread_exit(NULL);
 }
 
@@ -201,6 +205,7 @@ void *actualizar_desc(void * time)
     usleep(sle);
     for(i=0; i<clientes; i++)
     {
+
         pthread_mutex_lock(&clients_mutex);
         if(datos_c1[i].tarifa == 'A'){
           if(datos_c1[i].alta < 2008 && datos_c1[i].descuento != 30)
@@ -218,11 +223,11 @@ void *actualizar_desc(void * time)
             datos_c1[i].descuento = 25;
             cambio = 1;
           }
-          else if(datos_c1[i].descuento != 0)
-          {
-            datos_c1[i].descuento = 0;
-            cambio = 1;
-          }
+          // else
+          // {
+          //   datos_c1[i].descuento = 0;
+          //   cambio = 1;
+          // }
         }
         else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
         {
@@ -234,11 +239,13 @@ void *actualizar_desc(void * time)
           datos_c1[i].descuento = 30;
           cambio = 1;
         }
-
+        pthread_mutex_unlock(&clients_mutex);
     }
-    if(cambio)
-      pthread_cond_signal(&cambio_desc);
-    pthread_mutex_unlock(&clients_mutex);
+    if(cambio){
+        pthread_cond_signal(&cambio_desc);
+    }
+
+
 
 
     pthread_mutex_lock(&loop_mutex);
@@ -247,7 +254,6 @@ void *actualizar_desc(void * time)
   pthread_mutex_unlock(&loop_mutex);
   pthread_cond_signal(&cambio_desc);
   pthread_join(h_factura,NULL);
-  printf("Closing h_desc\n");
   pthread_exit(NULL);
 }
 
@@ -319,8 +325,8 @@ int main (int argc, char *argv[])
         pthread_mutex_destroy(&clients_mutex);
         pthread_mutex_destroy(&loop_mutex);
         pthread_cond_destroy(&cambio_desc);
-        pthread_exit(NULL);
         terminar();
+        pthread_exit(NULL);
         ex = 1;
         break;
       default:
