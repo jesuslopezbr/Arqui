@@ -152,10 +152,12 @@ void cambiar_tarifa()
 
 void *facturacion(void * time)
 {
+  long sle = (long) time * 1000000;
   int fact = 0;
   do{
     pthread_mutex_unlock(&loop_mutex);
     fact = 0;
+
     pthread_mutex_lock(&clients_mutex);
     pthread_cond_wait(&cambio_desc, &clients_mutex);
     pthread_mutex_lock(&loop_mutex);
@@ -235,9 +237,9 @@ void *actualizar_desc(void * time)
         }
           pthread_mutex_unlock(&clients_mutex);
     }
-    if(cambio){
+    if(cambio)
       pthread_cond_signal(&cambio_desc);
-    }
+
 
     pthread_mutex_lock(&loop_mutex);
   }while(loop);
@@ -261,6 +263,7 @@ int main (int argc, char *argv[])
   int ch, thread_control = 0;
   long time = atoi(argv[1]);
 
+  //pthread_mutex_t clients_mutex;
   pthread_mutex_init(&clients_mutex,NULL);
   pthread_mutex_init(&loop_mutex,NULL);
   pthread_cond_init(&cambio_desc, NULL);
