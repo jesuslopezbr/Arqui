@@ -1,8 +1,7 @@
-#include <string.h>
+#include <string>
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include <iostream>
 #include <stdio.h>
 
@@ -59,7 +58,6 @@ void imprimir_datos_c1()
 
 void clear_fail_state(){
     cout << endl << "ERROR -- You did not enter an integer" << endl;
-    // get rid of failure state
     cin.clear();
     cin.ignore(80, '\n');
 }
@@ -72,23 +70,26 @@ void alta_usr()
   cout << endl << "DNI del usuario: ";
   cin >> alta;
 
-  if(cin.fail()){
+  if(cin.fail())
+  {
     clear_fail_state();
     a = 1;
   }
 
-  if(alta < 10000000 || alta > 99999999){
+  if(alta < 10000000 || alta > 99999999)
+  {
     cout << endl << "No se puede tener un menor de 8 caracteres DNI: " << alta << endl;
     a = 1;
   }
 
   for(i=0; i<clientes; i++)
   {
-      if(alta == datos_c1[i].dni){
-        cout << endl << "El usuario con DNI: " << alta << " ya figura en el sistema" << endl;
-        a = 1;
-        break;
-      }
+    if(alta == datos_c1[i].dni)
+    {
+      cout << endl << "El usuario con DNI: " << alta << " ya figura en el sistema" << endl;
+      a = 1;
+      break;
+    }
   }
 
   if(a == 0)
@@ -113,21 +114,26 @@ void baja_usr()
   unsigned baja;
   int control = 0;
   int j;
+
   cout << endl << "Indique el DNI del usuario que quiere dar de baja: ";
   cin >> baja;
-  for(i=0; i<clientes; i++){
+
+  for(i=0; i<clientes; i++)
+  {
     if(baja == datos_c1[i].dni)
     {
-
-      for(j = i; j<clientes;j++){
+      for(j = i; j<clientes;j++)
+      {
         datos_c1[j]=datos_c1[j+1];
       }
+
       cout << endl << "El usuario con DNI: " << baja << " ha sido dado de baja" << endl;
       clientes--;
       pthread_cond_signal(&cambio_desc);
       control = 1;
     }
   }
+
   if(control == 0)
   {
     cout << endl << "El usuario con DNI: " << baja << " no esta dado de alta" << endl;
@@ -157,11 +163,15 @@ void cambiar_tarifa()
 void *facturacion(void * time)
 {
   int fact = 0;
-  do{
+
+  do
+  {
     pthread_mutex_unlock(&loop_mutex);
+
     fact = 0;
 
     pthread_mutex_lock(&clients_mutex);
+
     pthread_cond_wait(&cambio_desc, &clients_mutex);
 
     pthread_mutex_lock(&loop_mutex);
@@ -179,10 +189,13 @@ void *facturacion(void * time)
       cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
     }
     pthread_mutex_unlock(&loop_mutex);
+
     pthread_mutex_unlock(&clients_mutex);
+
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
+
   pthread_mutex_unlock(&loop_mutex);
   pthread_exit(NULL);
 }
@@ -194,19 +207,23 @@ void *actualizar_desc(void * time)
   int cambio = 0;
 
   ch = pthread_create(&h_factura, NULL, facturacion, (void *)time);
-  if(ch){
+  if(ch)
+  {
     printf("ERROR: return code from pthread_create() is %d\n", ch);
     exit(-1);
   }
-  do{
+
+  do
+  {
     cambio = 0;
     pthread_mutex_unlock(&loop_mutex);
 
     usleep(sle);
+
     for(i=0; i<clientes; i++)
     {
-
         pthread_mutex_lock(&clients_mutex);
+
         if(datos_c1[i].tarifa == 'A'){
           if(datos_c1[i].alta < 2008 && datos_c1[i].descuento != 30)
           {
@@ -223,11 +240,6 @@ void *actualizar_desc(void * time)
             datos_c1[i].descuento = 25;
             cambio = 1;
           }
-          // else
-          // {
-          //   datos_c1[i].descuento = 0;
-          //   cambio = 1;
-          // }
         }
         else if(datos_c1[i].tarifa == 'B' && datos_c1[i].descuento != 25)
         {
@@ -241,14 +253,14 @@ void *actualizar_desc(void * time)
         }
         pthread_mutex_unlock(&clients_mutex);
     }
-    if(cambio){
+
+    if(cambio)
+    {
         pthread_cond_signal(&cambio_desc);
     }
 
-
-
-
     pthread_mutex_lock(&loop_mutex);
+
   }while(loop);
 
   pthread_mutex_unlock(&loop_mutex);
@@ -273,7 +285,8 @@ int main (int argc, char *argv[])
   pthread_mutex_init(&loop_mutex,NULL);
   pthread_cond_init(&cambio_desc, NULL);
 
-  do{
+  do
+  {
 
     do
     {
