@@ -1,0 +1,75 @@
+Compilación:
+
+No hemos tenido problemas compilando con estas dos lineas en las maquinas de Telemática.
+
+gcc -c controlclientes.cpp
+gcc -o <Nombre de programa> controlclientes.o -lstdc++ -pthread
+
+Si encuentras fallos a la hora de compilar estas dos lineas son la alternativa que se puede usar para compilar.
+
+gcc-4.9 -c controlclientes.cpp
+gcc-4.9 -o <Nombre de programa> controlclientes.o -lstdc++ -pthread
+
+Ejecución:
+
+./<Nombre de programa> <Tiempo de actualizar_desc>
+
+Prototipos:
+
+En nuestros prototipos no ha hecho falta la entrada de variables ni el retorno de ninguna de ellas por el uso de variables globales. En los prototipos de facturación y actualizar_desc usamos la entrada void time para actualizar el descuento cada cierto tiempo especificado.
+
+void menu();
+
+void imprimir_datos_c1();
+
+void clear_fail_state();
+
+void alta_usr();
+
+void baja_usr();
+
+void cambiar_tarifa();
+
+void *actualizar_desc(void * time);
+
+void *facturacion();
+
+void terminar();
+
+int main (int argc, char *argv[]);
+
+Esquema de hebras, sincronizacion y comunicaci´on entre ellas:
+
+Hemos usado dos hebras, h_desc y h_factura, que usamos para la ejecución del método facturación y actualizar_desc.
+Creamos la hebra h_desc en el main al pulsar el boton '5' y la hebra h_factura en el metodo actualizar_desc a partir de la hebra h_desc.
+Para la sincronización hemos usado dos mutex y una condición, el mutex "clients_mutex" sirve para proteger los datos de los usuarios que tenemos en el array datos_c1. El otro mutex llamado loop_mutex es para proteger la variable "loop" que se usa para salir del loop en las hebras cuando se finaliza el programa.
+Para la comunicación la condición que hemos usado es "cambio_desc" y lo usamos cuando detectamos un cambio en el descuento de los clientes, ya sea por ajuste del descuento, por el alta o por la baja de un usuario. Cuando lo detecta manda una señal que es recibida por la condicion de espera que hay en el metodo de facturación
+Hemos usado estas librerias:
+- pthread.h para el manejo y creacion de threads y mutexes.
+- unistd.h para la llamada al sistema de usleep() que sirve para dormir el thread un tiempo determinado..
+- string.h para poder declarar strings dentro del programa en vez de usar char *.
+- iostream y stdio.h para la entrada y salida de pantalla.
+
+Creación y gestión de arrays:
+
+Hemos creado un array "datos_c1[MAX_CLIENTES]" de estructuras "info_cliente_t" con un tamaño máximo de 50 por ejemplo.
+
+Strings:
+
+Hemos declarado el nombre de la estructura como un "string" y no como un "char *" ya que en c++ con las librerias adecuadas se puede declarar de este manera.
+
+Entrada/Salida:
+
+Gracias a las librerias adecuadas, podemos usar cin para entrada de comando y cout para salida de comando.
+
+Descripción de los métodos:
+
+menu(): Muestra las opciones posibles a ejecutar con "cout".
+imprimir_datos_c1(): Saca por pantalla los datos de los usuarios dados de alta.
+alta_usr(): Se introduce la información de cada usuario en cada posición del array.
+baja_usr(): Se extrae la información del usuario de la posición que se elija con el dni.
+cambiar_tarifa(): Se modifica la tarifa por la introducida por el usuario del dni que especifique.
+*actualizar_desc(void * time): Se actualizan los descuentos cuando éstos son erróneos de forma periódica con un temporizador (time) y avisa a la hebra "h_factura" para recalcular la facturación.
+*facturacion(): Se recalcula la facturación cada vez que "h_desc" le avisa.
+terminar(): Imprime el mensaje de terminación.
+clear_fail_state(): Este método sirve para limpiar la entrada de usuario cada vez que se introduzca un caracter inválido.
