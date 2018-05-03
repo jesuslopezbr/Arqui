@@ -5,7 +5,7 @@
 UC3M::StringServiceI::stringSize(const ::std::string& s,
                                  const Ice::Current& current)
 {
-    return 0;
+    return s.length();
 }
 
 ::std::string
