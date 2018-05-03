@@ -75,7 +75,7 @@ main(int argc, char* argv[])
             printf("Opción ya activada\n");
           break;
         case 6:
-          terminar();
+          //terminar();
           ex = 1;
           break;
         default:
