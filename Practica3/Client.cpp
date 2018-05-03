@@ -16,8 +16,7 @@ main(int argc, char* argv[])
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("StringService:default -h
-    localhost -p 10000");
+    Ice::ObjectPrx base = ic->stringToProxy("StringService:default -p 10000");
 
     StringServicePrx remoteService = StringServicePrx::checkedCast(base);
     if (!remoteService)
