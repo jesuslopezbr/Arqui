@@ -24,7 +24,7 @@ int
 main(int argc, char* argv[])
 {
 
-  int status = 0;
+  int status = 0, opcion = 0;
 
   Ice::CommunicatorPtr ic;
   try {
@@ -69,13 +69,13 @@ main(int argc, char* argv[])
           break;
         case 5:
           if(thread_control == 0){
-            remoteService->actualizarDesc(time);
+            //remoteService->actualizarDesc(time);
             thread_control = 1;
           }else
             printf("Opción ya activada\n");
           break;
         case 6:
-          terminar(0);
+          terminar();
           ex = 1;
           break;
         default:
