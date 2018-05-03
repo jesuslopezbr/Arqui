@@ -1,4 +1,4 @@
-//#include <controlclientes.h>
+#include <controlclientes.h>
 #include <interfazI.h>
 
 void
