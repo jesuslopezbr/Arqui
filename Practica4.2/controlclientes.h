@@ -14,4 +14,4 @@ void *facturacion(void * time);
 
 void *actualizar_desc(void * time);
 
-void terminar();
+void terminarP();
