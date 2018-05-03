@@ -34,13 +34,12 @@ Demo::interfazI::cambiarTarifa(const Ice::Current& current)
 }
 
 void
-Demo::interfazI::terminar(::Ice::Int loop,
-                          const Ice::Current& current)
+Demo::interfazI::terminar(const Ice::Current& current)
 {
   loop = 0;
   pthread_join(h_desc,NULL);
   terminar();
   pthread_exit(NULL);
   ex = 1;
-  
+
 }
