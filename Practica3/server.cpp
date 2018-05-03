@@ -1,5 +1,5 @@
-#include "StringServiceI.h"
-#include "StringService.h"
+#include <StringServiceI.h>
+#include <StringService.h>
 #include <Ice/Ice.h>
 
 using namespace std;
