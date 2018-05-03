@@ -42,4 +42,5 @@ Demo::interfazI::terminar(::Ice::Int loop,
   terminar();
   pthread_exit(NULL);
   ex = 1;
+  
 }
