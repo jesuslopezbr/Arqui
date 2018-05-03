@@ -37,7 +37,7 @@ Demo::interfazI::terminar(const Ice::Current& current)
 {
   loop = 0;
   pthread_join(h_desc,NULL);
-  terminar();
+  terminarP();
   pthread_exit(NULL);
   ex = 1;
 }

@@ -270,7 +270,7 @@ void *actualizar_desc(void * time)
   pthread_exit(NULL);
 }
 
-void terminar()
+void terminarP()
 {
   cout << "Avisando a cliente de la terminacion!" << endl;
   cout << "Servidor terminado!" << endl << endl;
