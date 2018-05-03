@@ -4,6 +4,6 @@ module Demo {
   void bajaUsr();
   void actualizarDesc(int time);
   void cambiarTarifa();
-  void terminar(int loop);
+  void terminar();
  };
 };
