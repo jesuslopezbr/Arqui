@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
     // your client code here!
     int ex = 0, thread_control = 0;
+    int times = atoi(argv[1]);
 
     do
     {
@@ -63,7 +64,6 @@ int main(int argc, char* argv[])
           break;
         case 5:
           if(thread_control == 0){
-            int times = atoi(argv[1]);
             remoteService->actualizarDesc(times);
             thread_control = 1;
           }else
