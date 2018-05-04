@@ -29,5 +29,5 @@ Demo::interfazI::cambiarTarifa(const Ice::Current& current)
 void
 Demo::interfazI::terminar(const Ice::Current& current)
 {
-  term();
+  terminarP();
 }

@@ -285,20 +285,15 @@ void act_desc(int time)
 
 void terminarP()
 {
-  cout << "Avisando a cliente de la terminacion!" << endl;
-  cout << "Servidor terminado!" << endl << endl;
-}
-
-void term()
-{
   pthread_mutex_unlock(&clients_mutex);
 
   pthread_mutex_lock(&loop_mutex);
   loop = 0;
   pthread_mutex_unlock(&loop_mutex);
-  
+
   pthread_join(h_desc,NULL);
-  terminarP();
+  cout << "Avisando a cliente de la terminacion!" << endl;
+  cout << "Servidor terminado!" << endl << endl;
   pthread_exit(NULL);
   ex = 1;
 }
