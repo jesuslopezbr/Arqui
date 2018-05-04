@@ -63,13 +63,14 @@ int main(int argc, char* argv[])
           break;
         case 5:
           if(thread_control == 0){
-            //remoteService->actualizarDesc(time);
+            int times = atoi(argv[1]);
+            remoteService->actualizarDesc(times);
             thread_control = 1;
           }else
             printf("Opción ya activada\n");
           break;
         case 6:
-          //terminar();
+          remoteService->terminar();
           ex = 1;
           break;
         default:
