@@ -292,8 +292,8 @@ void terminarP()
   pthread_mutex_unlock(&loop_mutex);
 
   pthread_join(h_desc,NULL);
-  cout << "Avisando a cliente de la terminacion!" << endl;
-  cout << "Servidor terminado!" << endl << endl;
+  cout << endl << "Avisando a cliente de la terminacion!";
+  cout << endl << "Servidor terminado!" << endl << endl;
   pthread_exit(NULL);
   ex = 1;
 }
