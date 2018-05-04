@@ -1,4 +1,5 @@
 #include <testI.h>
+#include <test.h>
 #include <Ice/Ice.h>
 
 using namespace std;
