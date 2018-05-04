@@ -143,6 +143,7 @@ void baja_usr()
 
 void cambiar_tarifa()
 {
+  int cambio2 = 0;
   unsigned tar_dni;
   char tar_tar;
   cout << endl << "Indique el DNI del usuario que quiere cambiar la tarifa: ";
@@ -157,7 +158,12 @@ void cambiar_tarifa()
       cout << endl << "Solicitud de cambio de tarifa al servidor central en curso..." << endl;
       cout << "Resultado: Cambio de tarifa efectuado" << endl;
       datos_c1[i].descuento = 0;
+      cambio2 = 1;
     }
+  }
+  if(cambio2)
+  {
+    pthread_cond_signal(&cambio_desc);
   }
 }
 
