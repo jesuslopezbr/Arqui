@@ -26,7 +26,7 @@ main(int argc, char* argv[])
 
     // your client code here!
 
-    remoteService->op("",text) << endl;
+    remoteService->op("",text);
     cout << text;
     cin >> opcion;
     remoteService->op("opcion",text);
