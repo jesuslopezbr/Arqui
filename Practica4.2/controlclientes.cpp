@@ -105,8 +105,7 @@ void alta_usr()
     cout << "Descuento inicial: ";
     cin >> datos_c1[clientes2].descuento;
     clientes++;
-    cout << endl << "Solicitud de alta al servidor central en curso..." << endl;
-    cout << "Resultado: Usuario dado de alta" << endl;
+    cout << endl << "Recibida solicitud de alta de cliente." << endl;
   }
 }
 
@@ -128,7 +127,7 @@ void baja_usr()
         datos_c1[j]=datos_c1[j+1];
       }
 
-      cout << endl << "El usuario con DNI: " << baja << " ha sido dado de baja" << endl;
+      cout << endl << "Recibida solicitud de baja de cliente." << endl;
       clientes--;
       pthread_cond_signal(&cambio_desc);
       control = 1;
@@ -155,8 +154,7 @@ void cambiar_tarifa()
       cout << endl << "Nueva tarifa: ";
       cin >> tar_tar;
       datos_c1[i].tarifa = tar_tar;
-      cout << endl << "Solicitud de cambio de tarifa al servidor central en curso..." << endl;
-      cout << "Resultado: Cambio de tarifa efectuado" << endl;
+      cout << endl << "Recibida solicitud de actualizacion de tarifas." << endl;
       datos_c1[i].descuento = 0;
     }
     pthread_mutex_unlock(&clients_mutex);
@@ -189,7 +187,7 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      cout << endl << "Nueva facturacion estimada: " << fact << " euros" << endl;
+      cout << endl << "Nueva facturacion estimada: " << fact << " euros --> Aviso enviado a los clientes." << endl;
     }
     pthread_mutex_unlock(&loop_mutex);
 
@@ -292,7 +290,7 @@ void terminarP()
   pthread_mutex_unlock(&loop_mutex);
 
   pthread_join(h_desc,NULL);
-  cout << endl << "Avisando a cliente de la terminacion!";
+  cout << endl << "Recibida solicitud de terminacion.";
   cout << endl << "Servidor terminado!" << endl << endl;
   pthread_exit(NULL);
   ex = 1;
