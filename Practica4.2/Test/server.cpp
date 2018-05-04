@@ -1,4 +1,5 @@
 #include <testI.h>
+#include <test.h>
 #include <Ice/Ice.h>
 
 using namespace std;
@@ -13,7 +14,7 @@ main(int argc, char* argv[]){
     Ice::ObjectAdapterPtr adapter =
       ic -> createObjectAdapterWithEndpoints("asii_adapter",
         "default -p 10000");
-    Ice::ObjectPtr object = new test;
+    Ice::ObjectPtr object = new testI;
     adapter -> add(object, ic -> stringToIdentity("test"));
     adapter -> activate();
     ic -> waitForShutdown();
