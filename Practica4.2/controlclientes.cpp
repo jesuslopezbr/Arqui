@@ -291,7 +291,12 @@ void terminarP()
 
 void term()
 {
+  pthread_mutex_unlock(&clients_mutex);
+
+  pthread_mutex_lock(&loop_mutex);
   loop = 0;
+  pthread_mutex_unlock(&loop_mutex);
+  
   pthread_join(h_desc,NULL);
   terminarP();
   pthread_exit(NULL);
