@@ -150,6 +150,7 @@ void cambiar_tarifa()
   cin >> tar_dni;
   for(i=0; i<clientes; i++)
   {
+    pthread_mutex_lock(&clients_mutex);
     if(tar_dni == datos_c1[i].dni)
     {
       cout << endl << "Nueva tarifa: ";
@@ -160,6 +161,7 @@ void cambiar_tarifa()
       datos_c1[i].descuento = 0;
       cambio2 = 1;
     }
+    pthread_mutex_unlock(&clients_mutex);
   }
   if(cambio2)
   {
