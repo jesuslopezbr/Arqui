@@ -4,24 +4,7 @@
 using namespace std;
 using namespace Demo;
 
-void menu()
-{
-  cout << endl << "[1] Imprimir datos de clientes";
-  cout << endl << "[2] Alta de usuario";
-  cout << endl << "[3] Baja de usuario";
-  cout << endl << "[4] Cambio de tarifa";
-  cout << endl << "[5] Actualizar descuentos";
-  cout << endl << "[6] Terminar" << endl;
-  cout << endl << "Opcion: ";
-}
-void clear_fail_state(){
-    cout << endl << "ERROR -- You did not enter an integer" << endl;
-    cin.clear();
-    cin.ignore(80, '\n');
-}
-
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 
   int status = 0, opcion = 0;
@@ -44,11 +27,22 @@ main(int argc, char* argv[])
 
       do
       {
-        menu();
+        cout << endl << "[1] Imprimir datos de clientes";
+        cout << endl << "[2] Alta de usuario";
+        cout << endl << "[3] Baja de usuario";
+        cout << endl << "[4] Cambio de tarifa";
+        cout << endl << "[5] Actualizar descuentos";
+        cout << endl << "[6] Terminar" << endl;
+        cout << endl << "Opcion: ";
+
         cin >> opcion;
         cout << endl;
-        if(cin.fail())
-          clear_fail_state();
+
+        if(cin.fail()){
+          cout << endl << "ERROR -- You did not enter an integer" << endl;
+          cin.clear();
+          cin.ignore(80, '\n');
+        }
       }while(opcion < 1 || opcion > 6);
 
 
