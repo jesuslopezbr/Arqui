@@ -270,8 +270,28 @@ void *actualizar_desc(void * time)
   pthread_exit(NULL);
 }
 
+void act_desc(int time)
+{
+  int ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
+  cout << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
+  cout << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
+  if(ch){
+    printf("ERROR: return code from pthread_create() is %d\n", ch);
+    exit(-1);
+  }
+}
+
 void terminarP()
 {
   cout << "Avisando a cliente de la terminacion!" << endl;
   cout << "Servidor terminado!" << endl << endl;
+}
+
+void term()
+{
+  loop = 0;
+  pthread_join(h_desc,NULL);
+  terminarP();
+  pthread_exit(NULL);
+  ex = 1;
 }

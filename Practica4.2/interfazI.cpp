@@ -24,6 +24,7 @@ Demo::interfazI::actualizarDesc(::Ice::Int time,
     printf("ERROR: return code from pthread_create() is %d\n", ch);
     exit(-1);
   }*/
+  act_desc(time);
 }
 
 void
@@ -40,4 +41,5 @@ Demo::interfazI::terminar(const Ice::Current& current)
   terminarP();
   pthread_exit(NULL);
   ex = 1;*/
+  term();
 }
