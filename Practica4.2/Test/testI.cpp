@@ -8,6 +8,6 @@ M::TestI::op(const ::std::string& sin,
 {
 
     sout = "DNI:";
-    cout << sin << endl;
+    cout <<"El Dni es " sin << endl;
     return 0;
 }

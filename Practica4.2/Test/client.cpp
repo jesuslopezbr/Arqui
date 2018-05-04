@@ -29,7 +29,7 @@ main(int argc, char* argv[])
     remoteService->op("",text);
     cout << text;
     cin >> opcion;
-    remoteService->op("opcion",text);
+    remoteService->op(opcion,text);
     cout << text;
 
   } catch (const Ice::Exception& ex) {
