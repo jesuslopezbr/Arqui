@@ -165,7 +165,7 @@ void cambiar_tarifa()
   }
   if(cambio2)
   {
-    pthread_cond_signal(&cambio_desc);
+    //pthread_cond_signal(&cambio_desc);
   }
 }
 
