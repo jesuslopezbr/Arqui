@@ -154,7 +154,7 @@ void cambiar_tarifa()
       cout << endl << "Nueva tarifa: ";
       cin >> tar_tar;
       datos_c1[i].tarifa = tar_tar;
-      cout << endl << "Recibida solicitud de actualizacion de tarifas." << endl;
+      cout << endl << "Recibida solicitud de cambio de tarifa." << endl;
       datos_c1[i].descuento = 0;
     }
     pthread_mutex_unlock(&clients_mutex);
@@ -273,8 +273,7 @@ void *actualizar_desc(void * time)
 void act_desc(int time)
 {
   int ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
-  cout << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
-  cout << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
+  cout << endl << "Recibida solicitud de actualizacion de tarifas." << endl;
   if(ch){
     printf("ERROR: return code from pthread_create() is %d\n", ch);
     exit(-1);

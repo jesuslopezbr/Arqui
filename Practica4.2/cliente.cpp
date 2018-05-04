@@ -64,10 +64,13 @@ int main(int argc, char* argv[])
           break;
         case 5:
           if(thread_control == 0){
+            cout << endl << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
+            cout << endl << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
             remoteService->actualizarDesc(times);
             thread_control = 1;
-          }else
-            printf("Opción ya activada\n");
+          }else{
+            cout << endl << "Opción ya activada" << endl;
+          }
           break;
         case 6:
           remoteService->terminar();
