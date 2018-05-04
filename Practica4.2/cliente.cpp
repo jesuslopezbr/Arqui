@@ -1,55 +1,49 @@
-#include "StringService.h"
-#include <StringServiceI.h>
+#include "interfaz.h"
 #include <Ice/Ice.h>
 
 using namespace std;
-using namespace UC3M;
+using namespace Demo;
 
-void menu()
-{
-  cout << endl << "[1] Imprimir datos de clientes";
-  cout << endl << "[2] Alta de usuario";
-  cout << endl << "[3] Baja de usuario";
-  cout << endl << "[4] Cambio de tarifa";
-  cout << endl << "[5] Actualizar descuentos";
-  cout << endl << "[6] Terminar" << endl;
-  cout << endl << "Opcion: ";
-}
-void clear_fail_state(){
-    cout << endl << "ERROR -- You did not enter an integer" << endl;
-    cin.clear();
-    cin.ignore(80, '\n');
-}
-
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 
-  int status = 0;
+  int status = 0, opcion = 0;
 
   Ice::CommunicatorPtr ic;
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("StringService:default -p 10000");
+    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -p 10000");
 
-    StringServicePrx remoteService = StringServicePrx::checkedCast(base);
+    interfazPrx remoteService = interfazPrx::checkedCast(base);
     if (!remoteService)
       throw "Invalid proxy";
 
     // your client code here!
     int ex = 0, thread_control = 0;
+    int times = atoi(argv[1]);
 
     do
     {
 
       do
       {
-        menu();
+        cout << endl << "[1] Imprimir datos de clientes";
+        cout << endl << "[2] Alta de usuario";
+        cout << endl << "[3] Baja de usuario";
+        cout << endl << "[4] Cambio de tarifa";
+        cout << endl << "[5] Actualizar descuentos";
+        cout << endl << "[6] Terminar" << endl;
+        cout << endl << "Opcion: ";
+
         cin >> opcion;
         cout << endl;
-        if(cin.fail())
-          clear_fail_state();
+
+        if(cin.fail()){
+          cout << endl << "ERROR -- You did not enter an integer" << endl;
+          cin.clear();
+          cin.ignore(80, '\n');
+        }
       }while(opcion < 1 || opcion > 6);
 
 
@@ -70,13 +64,16 @@ main(int argc, char* argv[])
           break;
         case 5:
           if(thread_control == 0){
-            remoteService->actualizarDesc(time);
+            cout << endl << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
+            remoteService->actualizarDesc(times);
+            cout << endl << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
             thread_control = 1;
-          }else
-            printf("Opción ya activada\n");
+          }else{
+            cout << endl << "Opción ya activada" << endl;
+          }
           break;
         case 6:
-          terminar(0);
+          remoteService->terminar();
           ex = 1;
           break;
         default:
@@ -98,7 +95,9 @@ main(int argc, char* argv[])
   }
 
   if (ic)
-  ic->destroy();
+  {
+      ic->destroy();
+  }
 
   return status;
 }
