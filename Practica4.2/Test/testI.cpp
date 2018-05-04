@@ -6,7 +6,8 @@ M::TestI::op(const ::std::string& sin,
              ::std::string& sout,
              const Ice::Current& current)
 {
+
+    sout = "DNI:";
     cout << sin << endl;
-    sout = "Hello";
     return 0;
 }

@@ -12,6 +12,7 @@ main(int argc, char* argv[])
 
   int status = 0;
   string text = "";
+  string opcion;
 
   Ice::CommunicatorPtr ic;
   try {
@@ -25,7 +26,10 @@ main(int argc, char* argv[])
 
     // your client code here!
 
-    cout << remoteService->op("do it",text) << endl;
+    remoteService->op("",text) << endl;
+    cout << text;
+    cin >> opcion;
+    remoteService->op("opcion",text);
     cout << text;
 
   } catch (const Ice::Exception& ex) {
