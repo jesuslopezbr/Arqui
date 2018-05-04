@@ -2,18 +2,17 @@
 #define __testI_h__
 
 #include <test.h>
-//base
 
 namespace M
 {
 
-class TestI : public virtual Test
+class TestI : virtual public Test
 {
 public:
 
-    virtual int op(::std::string&,
-                   ::std::string&,
-                   const Ice::Current&) override;
+    virtual ::Ice::Int op(const ::std::string&,
+                          ::std::string&,
+                          const Ice::Current&);
 };
 
 }
