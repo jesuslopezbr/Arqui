@@ -14,7 +14,7 @@ main(int argc, char* argv[]){
     Ice::ObjectAdapterPtr adapter =
       ic -> createObjectAdapterWithEndpoints("asii_adapter",
         "default -p 10000");
-    Ice::ObjectPtr object = new TestI;
+    Ice::ObjectPtr object = new Test;
     adapter -> add(object, ic -> stringToIdentity("Test"));
     adapter -> activate();
     ic -> waitForShutdown();
