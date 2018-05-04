@@ -17,9 +17,9 @@ main(int argc, char* argv[])
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("StringService:default -p 10000");
+    Ice::ObjectPrx base = ic->stringToProxy("Test:default -p 10000");
 
-    StringServicePrx remoteService = StringServicePrx::checkedCast(base);
+    TestPrx remoteService = TestPrx::checkedCast(base);
     if (!remoteService)
       throw "Invalid proxy";
 
