@@ -92,7 +92,9 @@ int main(int argc, char* argv[])
   }
 
   if (ic)
-  ic->destroy();
+  {
+      ic->destroy();
+  }
 
   return status;
 }
