@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 
     do
     {
-      fact = remoteService->check_fact();
+      fact = remoteService->checkFact();
       if(fact != ""){
         cout << fact << endl;
         fact = "";
