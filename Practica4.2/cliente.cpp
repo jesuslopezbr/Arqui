@@ -92,16 +92,17 @@ int main(int argc, char* argv[])
           ss << dni;
           dni_s = ss.str();
           remoteService->checkUsr(dni_s,0,control);
-          if(control == "Ok")
-          cout << "Nombre del usuario: ";
-          cin >> nombre;
-          cout << "Tarifa inicial: ";
-          cin >> tarifa;
-          cout << "Fecha de alta: ";
-          cin >> alta;
-          cout << "Descuento inicial: ";
-          cin >> descuento;
-            remoteService->altaUsr(dni_s, nombre, tarifa, alta, descuento,control);
+          if(control == "Ok"){
+            cout << "Nombre del usuario: ";
+            cin >> nombre;
+            cout << "Tarifa inicial: ";
+            cin >> tarifa;
+            cout << "Fecha de alta: ";
+            cin >> alta;
+            cout << "Descuento inicial: ";
+            cin >> descuento;
+              remoteService->altaUsr(dni_s, nombre, tarifa, alta, descuento,control);
+            }
           else
             cout << control << endl;
           break;
