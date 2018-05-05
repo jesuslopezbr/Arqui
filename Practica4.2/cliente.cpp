@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
           if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
             cout << control << endl;
           else{
-            control = remoteService->bajaUsr(stoi(control));
+            control = remoteService->bajaUsr(control);
             cout << control << endl;
           }
           break;

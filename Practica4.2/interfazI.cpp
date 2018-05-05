@@ -24,7 +24,7 @@ Demo::interfazI::altaUsr(const ::std::string& dni,
 {
   unsigned dni2 = stoul(dni,NULL,0);
   unsigned alta2 = stoul(alta,NULL,0);
-  unsigned descuento2 = strtoul(descuento);
+  unsigned descuento2 = stoul(descuento,NULL,0);
 
   sout = alta_usr(dni2, nombre, tarifa, alta2, descuento2);
 }
@@ -34,7 +34,7 @@ Demo::interfazI::bajaUsr(const ::std  ::string& dni,
                          ::std::string& sout,
                          const Ice::Current& current)
 {
-  int i = stoi(value);
+  int i = stoi(dni,NULL,0);
   sout = baja_usr(i);
 }
 
