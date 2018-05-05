@@ -102,6 +102,7 @@ int main(int argc, char* argv[])
             cout << "Descuento inicial: ";
             cin >> descuento;
               remoteService->altaUsr(dni_s, nombre, tarifa, alta, descuento,control);
+              cout << endl << control << endl;
             }
           else
             cout << control << endl;
