@@ -7,6 +7,8 @@
 #include <controlclientes.h>
 
 
+using namespace std;
+
 #define MAX_CLIENTES 50
 
 pthread_t h_desc, h_factura;
@@ -41,7 +43,6 @@ void menu()
   cout << endl << "[6] Terminar" << endl;
   cout << endl << "Opcion: ";
 }
-
 void imprimir_datos_c1()
 {
   if(datos_c1[0].dni == 0)

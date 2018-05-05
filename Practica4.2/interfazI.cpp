@@ -3,7 +3,7 @@
 #include <interfazI.h>
 #include <string>
 
-
+using namespace std;
 
 void
 Demo::interfazI::checkUsr(const ::std::string& dni,
