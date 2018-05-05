@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
     do
     {
-      fact = remoteService->checkFact();
+      fact = remoteService->checkFact(control);
       if(fact != ""){
         cout << fact << endl;
         fact = "";
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
           ss << dni;
           dni_s = ss.str();
           remoteService->checkUsr(dni_s,1,control);
-          if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
+          if(control = "El usuario con DNI: " << dni_s << " no esta dado de alta")
             cout << control << endl;
           else{
             cin >> tarifa;
