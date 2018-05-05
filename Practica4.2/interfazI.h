@@ -2,6 +2,7 @@
 #define __interfazI_h__
 
 #include <interfaz.h>
+#include <string>
 
 namespace Demo
 {
