@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <controlclientes.h>
+#include <sstream>
 
 
 using namespace std;
@@ -68,13 +69,15 @@ void clear_fail_state(){
 string check_usr(unsigned dni, int option) {
   string sout;
   string dni_s;
+  stringstream ss;
   if(option == 0){
     for(i=0; i<clientes; i++)
     {
       if(dni == datos_c1[i].dni)
       {
-        dni_s = std::to_string(dni);
-        sout = "El usuario con DNI: " << dni_s << " ya figura en el sistema";
+        //dni_s = std::to_string(dni);
+        ss  = "El usuario con DNI: " << dni_s << " ya figura en el sistema";
+        sout = ss.str();
         return sout;
         a = 1;
         break;
@@ -85,16 +88,19 @@ string check_usr(unsigned dni, int option) {
     {
       if(dni == datos_c1[i].dni)
       {
-
-       return std::to_string(i);
+        ss = i;
+        sout = ss.str();
+        return sout;
       }
     }
   }
   if (option == 0)
     return "Ok";
   else if  (option == 1){
-    dni_s = std::to_string(dni);
-    return "El usuario con DNI: " << dni_s << " no esta dado de alta";
+    ss = "El usuario con DNI: " << dni << " no esta dado de alta";
+    //dni_s = std::to_string(dni);
+    sout = ss.str();
+    return sout;
   }
   else
   return "";
@@ -153,6 +159,7 @@ void *facturacion(void * time)
 {
   int fact = 0;
   string to_s;
+  stringstream ss;
 
   do
   {
@@ -176,8 +183,8 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      to_s = std::to_string(fact);
-      fact_s = "Nueva facturacion estimada: " << to_s << " euros ";
+      ss = "Nueva facturacion estimada: " << fact << " euros ";
+      fact_s = ss.str();
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
