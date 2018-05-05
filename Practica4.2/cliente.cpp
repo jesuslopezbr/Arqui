@@ -108,11 +108,11 @@ int main(int argc, char* argv[])
           break;
         case 3:
           dni = dni_req();
-          ss << dni;
+          ss << "El usuario con DNI: " << dni << " no esta dado de alta";
           dni_s = ss.str();
 
           remoteService->checkUsr(dni_s,1,control);
-          if(control = "El usuario con DNI: " << dni_s << " no esta dado de alta")
+          if(control == dni_s)
             cout << control << endl;
           else{
             remoteService->bajaUsr(control,control);
