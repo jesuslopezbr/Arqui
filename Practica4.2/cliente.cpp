@@ -4,10 +4,35 @@
 using namespace std;
 using namespace Demo;
 
+unsigned dni_req(){
+  unsigned dni;
+  cout << endl << "DNI del usuario: ";
+  cin >> dni;
+  if(cin.fail())
+  {
+    clear_fail_state();
+  }
+  if(dni < 10000000 || dni > 99999999)
+  {
+    cout << endl << "No se puede tener un menor de 8 caracteres DNI: " << dni << endl;
+    return 0;
+  }
+  else{
+    return alta;
+  }
+}
+
 int main(int argc, char* argv[])
 {
 
   int status = 0, opcion = 0;
+  unsigned dni;
+  string control;
+  string nombre;
+  char tarifa;
+  unsigned alta;
+  unsigned descuento;
+  string fact;
 
   Ice::CommunicatorPtr ic;
   try {
@@ -25,7 +50,11 @@ int main(int argc, char* argv[])
 
     do
     {
-
+      fact = remoteService->check_fact();
+      if(fact != ""){
+        cout << fact << endl;
+        fact = "";
+      }
       do
       {
         cout << endl << "[1] Imprimir datos de clientes";
@@ -54,13 +83,41 @@ int main(int argc, char* argv[])
           cout << "Opción no disponible\n";
           break;
         case 2:
-          remoteService->altaUsr();
+          dni = dni_req();
+          control = remoteService->checkUsr(dni,0);
+          if(control == "Ok")
+          cout << "Nombre del usuario: ";
+          cin >> nombre;
+          cout << "Tarifa inicial: ";
+          cin >> tarifa;
+          cout << "Fecha de alta: ";
+          cin >> alta;
+          cout << "Descuento inicial: ";
+          cin >> descuento;
+            remoteService->altaUsr(dni, nombre, tarifa, alta, descuento);
+          else
+            cout << control << endl;
           break;
         case 3:
-          remoteService->bajaUsr();
+          dni = dni_req();
+          control = remoteService->checkUsr(dni,1);
+          if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
+            cout << control << endl;
+          else{
+            control = remoteService->bajaUsr(stoi(control));
+            cout << control << endl;
+          }
           break;
         case 4:
-          remoteService->cambiarTarifa();
+          dni = dni_req();
+          control = remoteService->checkUsr(dni,1);
+          if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
+            cout << control << endl;
+          else{
+            cin >> tarifa;
+            control = remoteService->cambiarTarifa(dni, tarifa);
+            cout << control << endl;
+          }
           break;
         case 5:
           if(thread_control == 0){

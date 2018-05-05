@@ -11,12 +11,14 @@ using namespace std;
 #define MAX_CLIENTES 50
 
 pthread_t h_desc, h_factura;
-pthread_mutex_t clients_mutex;
-pthread_mutex_t loop_mutex;
-pthread_cond_t cambio_desc;
+pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t loop_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cambio_desc = PTHREAD_COND_INITIALIZER;
 
 int i = 0, clientes = 0, ex = 0;
 int loop = 1;
+string fact;
+int fact_c = 0;
 
 struct info_cliente
 {
@@ -63,102 +65,82 @@ void clear_fail_state(){
     cin.ignore(80, '\n');
 }
 
-void alta_usr()
-{
-  unsigned alta;
-  int clientes2 = clientes;
-  int a = 0;
-  cout << endl << "DNI del usuario: ";
-  cin >> alta;
-
-  if(cin.fail())
-  {
-    clear_fail_state();
-    a = 1;
-  }
-
-  if(alta < 10000000 || alta > 99999999)
-  {
-    cout << endl << "No se puede tener un menor de 8 caracteres DNI: " << alta << endl;
-    a = 1;
-  }
-
-  for(i=0; i<clientes; i++)
-  {
-    if(alta == datos_c1[i].dni)
+string check_usr(unsigned dni, int option) {
+  if(option == 0){
+    for(i=0; i<clientes; i++)
     {
-      cout << endl << "El usuario con DNI: " << alta << " ya figura en el sistema" << endl;
-      a = 1;
-      break;
+      if(dni == datos_c1[i].dni)
+      {
+        return "El usuario con DNI: " << dni << " ya figura en el sistema";
+        a = 1;
+        break;
+      }
+    }
+  }else if(option == 1){
+    for(i=0; i<clientes; i++)
+    {
+      if(dni == datos_c1[i].dni)
+      {
+
+       return i;
+      }
     }
   }
-
-  if(a == 0)
-  {
-    datos_c1[clientes2].dni = alta;
-    cout << "Nombre del usuario: ";
-    cin >> datos_c1[clientes2].nombre;
-    cout << "Tarifa inicial: ";
-    cin >> datos_c1[clientes2].tarifa;
-    cout << "Fecha de alta: ";
-    cin >> datos_c1[clientes2].alta;
-    cout << "Descuento inicial: ";
-    cin >> datos_c1[clientes2].descuento;
-    clientes++;
-    cout << endl << "Recibida solicitud de alta de cliente." << endl;
-  }
+  if (option == 0)
+    return "Ok";
+  else if  (option == 1)
+    return "El usuario con DNI: " << dni << " no esta dado de alta";
+  else
+  return "";
 }
 
-void baja_usr()
+string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
+{
+  int clientes2 = clientes;
+
+    datos_c1[clientes2].dni = dni;
+    datos_c1[clientes2].nombre = nombre;
+    datos_c1[clientes2].tarifa = tarifa;
+    datos_c1[clientes2].alta = alta;
+    datos_c1[clientes2].descuento = desc;
+    clientes++;
+    return "Recibida solicitud de alta de cliente.";
+}
+
+string baja_usr(int i)
 {
   unsigned baja;
   int control = 0;
   int j;
 
-  cout << endl << "Indique el DNI del usuario que quiere dar de baja: ";
-  cin >> baja;
-
-  for(i=0; i<clientes; i++)
+  for(j = i; j<clientes;j++)
   {
-    if(baja == datos_c1[i].dni)
-    {
-      for(j = i; j<clientes;j++)
-      {
-        datos_c1[j]=datos_c1[j+1];
-      }
-
-      cout << endl << "Recibida solicitud de baja de cliente." << endl;
-      clientes--;
-      pthread_cond_signal(&cambio_desc);
-      control = 1;
-    }
+    datos_c1[j]=datos_c1[j+1];
   }
 
-  if(control == 0)
-  {
-    cout << endl << "El usuario con DNI: " << baja << " no esta dado de alta" << endl;
-  }
+  clientes--;
+  pthread_cond_signal(&cambio_desc);
+  return "Recibida solicitud de baja de cliente.";
+
+
 }
 
-void cambiar_tarifa()
+string cambiar_tarifa(unsigned dni, char tarifa)
 {
-  unsigned tar_dni;
-  char tar_tar;
-  cout << endl << "Indique el DNI del usuario que quiere cambiar la tarifa: ";
-  cin >> tar_dni;
+
   for(i=0; i<clientes; i++)
   {
     pthread_mutex_lock(&clients_mutex);
-    if(tar_dni == datos_c1[i].dni)
+    if(dni == datos_c1[i].dni)
     {
-      cout << endl << "Nueva tarifa: ";
-      cin >> tar_tar;
-      datos_c1[i].tarifa = tar_tar;
-      cout << endl << "Recibida solicitud de cambio de tarifa." << endl;
+
+      datos_c1[i].tarifa = tarifa;
       datos_c1[i].descuento = 0;
+      break;
     }
     pthread_mutex_unlock(&clients_mutex);
   }
+  return "Recibida solicitud de cambio de tarifa." ;
 }
 
 void *facturacion(void * time)
@@ -187,7 +169,8 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      cout << endl << "Nueva facturacion estimada: " << fact << " euros --> Aviso enviado a los clientes." << endl;
+      fact = "Nueva facturacion estimada: " << fact << " euros ";
+      cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
 
@@ -268,6 +251,14 @@ void *actualizar_desc(void * time)
   pthread_cond_signal(&cambio_desc);
   pthread_join(h_factura,NULL);
   pthread_exit(NULL);
+}
+
+string check_fact(){
+  if(fact_c == 1){
+    fact_c = 0;
+    return fact;
+  }else
+    return "";
 }
 
 void act_desc(int time)
