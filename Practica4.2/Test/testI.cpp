@@ -9,5 +9,8 @@ M::TestI::op(const ::std::string& sin,
 
     sout = "DNI:";
     cout <<"El Dni es " << sin << endl;
+    sout = "Nombre:";
+    cout <<"El Nombre es " << sin << endl;
+    sout = "Nombre:";
     return 0;
 }
