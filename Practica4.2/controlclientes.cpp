@@ -79,7 +79,6 @@ string check_usr(unsigned dni, int option) {
         ss  << "El usuario con DNI: " << dni_s << " ya figura en el sistema";
         sout = ss.str();
         return sout;
-        a = 1;
         break;
       }
     }
