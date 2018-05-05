@@ -677,39 +677,39 @@ private:
     
 public:
 
-    void cambiarTarifa(const ::std::string& dni, ::std::string& sout)
+    void cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, ::std::string& sout)
     {
-        cambiarTarifa(dni, sout, 0);
+        cambiarTarifa(dni, tarifa, sout, 0);
     }
-    void cambiarTarifa(const ::std::string& dni, ::std::string& sout, const ::Ice::Context& __ctx)
+    void cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, ::std::string& sout, const ::Ice::Context& __ctx)
     {
-        cambiarTarifa(dni, sout, &__ctx);
+        cambiarTarifa(dni, tarifa, sout, &__ctx);
     }
 #ifdef ICE_CPP11
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::std::string& dni, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return __begin_cambiarTarifa(dni, 0, __response, __exception, __sent);
+        return __begin_cambiarTarifa(dni, tarifa, 0, __response, __exception, __sent);
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::std::string& dni, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_cambiarTarifa(dni, 0, ::Ice::newCallback(__completed, __sent), 0);
+        return begin_cambiarTarifa(dni, tarifa, 0, ::Ice::newCallback(__completed, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return __begin_cambiarTarifa(dni, &__ctx, __response, __exception, __sent);
+        return __begin_cambiarTarifa(dni, tarifa, &__ctx, __response, __exception, __sent);
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_cambiarTarifa(dni, &__ctx, ::Ice::newCallback(__completed, __sent));
+        return begin_cambiarTarifa(dni, tarifa, &__ctx, ::Ice::newCallback(__completed, __sent));
     }
     
 private:
 
-    ::Ice::AsyncResultPtr __begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context* __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception, const ::IceInternal::Function<void (bool)>& __sent)
+    ::Ice::AsyncResultPtr __begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context* __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception, const ::IceInternal::Function<void (bool)>& __sent)
     {
         class Cpp11CB : public ::IceInternal::Cpp11FnCallbackNC
         {
@@ -745,48 +745,48 @@ private:
             
             ::std::function<void (const ::std::string&)> _response;
         };
-        return begin_cambiarTarifa(dni, __ctx, new Cpp11CB(__response, __exception, __sent));
+        return begin_cambiarTarifa(dni, tarifa, __ctx, new Cpp11CB(__response, __exception, __sent));
     }
     
 public:
 #endif
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa)
     {
-        return begin_cambiarTarifa(dni, 0, ::IceInternal::__dummyCallback, 0);
+        return begin_cambiarTarifa(dni, tarifa, 0, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context& __ctx)
     {
-        return begin_cambiarTarifa(dni, &__ctx, ::IceInternal::__dummyCallback, 0);
+        return begin_cambiarTarifa(dni, tarifa, &__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(dni, 0, __del, __cookie);
+        return begin_cambiarTarifa(dni, tarifa, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(dni, &__ctx, __del, __cookie);
+        return begin_cambiarTarifa(dni, tarifa, &__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(dni, 0, __del, __cookie);
+        return begin_cambiarTarifa(dni, tarifa, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(dni, &__ctx, __del, __cookie);
+        return begin_cambiarTarifa(dni, tarifa, &__ctx, __del, __cookie);
     }
 
     void end_cambiarTarifa(::std::string& sout, const ::Ice::AsyncResultPtr&);
     
 private:
 
-    void cambiarTarifa(const ::std::string&, ::std::string&, const ::Ice::Context*);
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    void cambiarTarifa(const ::std::string&, ::Ice::Byte, ::std::string&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string&, ::Ice::Byte, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
 
@@ -1036,7 +1036,7 @@ public:
 
     virtual void checkFact(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
-    virtual void cambiarTarifa(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
+    virtual void cambiarTarifa(const ::std::string&, ::Ice::Byte, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
     virtual void terminar(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 };
@@ -1066,7 +1066,7 @@ public:
 
     virtual void checkFact(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void cambiarTarifa(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void cambiarTarifa(const ::std::string&, ::Ice::Byte, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void terminar(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 };
@@ -1096,7 +1096,7 @@ public:
 
     virtual void checkFact(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void cambiarTarifa(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void cambiarTarifa(const ::std::string&, ::Ice::Byte, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void terminar(::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 };
@@ -1135,7 +1135,7 @@ public:
     virtual void checkFact(::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___checkFact(::IceInternal::Incoming&, const ::Ice::Current&);
 
-    virtual void cambiarTarifa(const ::std::string&, ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
+    virtual void cambiarTarifa(const ::std::string&, ::Ice::Byte, ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___cambiarTarifa(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual void terminar(::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;

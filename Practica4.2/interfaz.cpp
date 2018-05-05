@@ -456,7 +456,7 @@ IceProxy::Demo::interfaz::end_checkFact(::std::string& sout, const ::Ice::AsyncR
 }
 
 void
-IceProxy::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __ctx)
+IceProxy::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, ::std::string& sout, const ::Ice::Context* __ctx)
 {
     ::IceInternal::InvocationObserver __observer(this, __Demo__interfaz__cambiarTarifa_name, __ctx);
     int __cnt = 0;
@@ -468,7 +468,7 @@ IceProxy::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::string&
             __checkTwowayOnly(__Demo__interfaz__cambiarTarifa_name);
             __delBase = __getDelegate(false);
             ::IceDelegate::Demo::interfaz* __del = dynamic_cast< ::IceDelegate::Demo::interfaz*>(__delBase.get());
-            __del->cambiarTarifa(dni, sout, __ctx, __observer);
+            __del->cambiarTarifa(dni, tarifa, sout, __ctx, __observer);
             return;
         }
         catch(const ::IceInternal::LocalExceptionWrapper& __ex)
@@ -483,7 +483,7 @@ IceProxy::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::string&
 }
 
 ::Ice::AsyncResultPtr
-IceProxy::Demo::interfaz::begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
+IceProxy::Demo::interfaz::begin_cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
 {
     __checkAsyncTwowayOnly(__Demo__interfaz__cambiarTarifa_name);
     ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Demo__interfaz__cambiarTarifa_name, __del, __cookie);
@@ -492,6 +492,7 @@ IceProxy::Demo::interfaz::begin_cambiarTarifa(const ::std::string& dni, const ::
         __result->__prepare(__Demo__interfaz__cambiarTarifa_name, ::Ice::Normal, __ctx);
         ::IceInternal::BasicStream* __os = __result->__startWriteParams(::Ice::DefaultFormat);
         __os->write(dni);
+        __os->write(tarifa);
         __result->__endWriteParams();
         __result->__send(true);
     }
@@ -820,13 +821,14 @@ IceDelegateM::Demo::interfaz::checkFact(::std::string& sout, const ::Ice::Contex
 }
 
 void
-IceDelegateM::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver& __observer)
+IceDelegateM::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver& __observer)
 {
     ::IceInternal::Outgoing __og(__handler.get(), __Demo__interfaz__cambiarTarifa_name, ::Ice::Normal, __context, __observer);
     try
     {
         ::IceInternal::BasicStream* __os = __og.startWriteParams(::Ice::DefaultFormat);
         __os->write(dni);
+        __os->write(tarifa);
         __og.endWriteParams();
     }
     catch(const ::Ice::LocalException& __ex)
@@ -1225,15 +1227,16 @@ IceDelegateD::Demo::interfaz::checkFact(::std::string& sout, const ::Ice::Contex
 }
 
 void
-IceDelegateD::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver&)
+IceDelegateD::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::Ice::Byte tarifa, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver&)
 {
     class _DirectI : public ::IceInternal::Direct
     {
     public:
 
-        _DirectI(const ::std::string& __p_dni, ::std::string& __p_sout, const ::Ice::Current& __current) : 
+        _DirectI(const ::std::string& __p_dni, ::Ice::Byte __p_tarifa, ::std::string& __p_sout, const ::Ice::Current& __current) : 
             ::IceInternal::Direct(__current),
             _m_dni(__p_dni),
+            _m_tarifa(__p_tarifa),
             _m_sout(__p_sout)
         {
         }
@@ -1246,13 +1249,14 @@ IceDelegateD::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::str
             {
                 throw ::Ice::OperationNotExistException(__FILE__, __LINE__, _current.id, _current.facet, _current.operation);
             }
-            servant->cambiarTarifa(_m_dni, _m_sout, _current);
+            servant->cambiarTarifa(_m_dni, _m_tarifa, _m_sout, _current);
             return ::Ice::DispatchOK;
         }
         
     private:
         
         const ::std::string& _m_dni;
+        ::Ice::Byte _m_tarifa;
         ::std::string& _m_sout;
     };
     
@@ -1260,7 +1264,7 @@ IceDelegateD::Demo::interfaz::cambiarTarifa(const ::std::string& dni, ::std::str
     __initCurrent(__current, __Demo__interfaz__cambiarTarifa_name, ::Ice::Normal, __context);
     try
     {
-        _DirectI __direct(dni, sout, __current);
+        _DirectI __direct(dni, tarifa, sout, __current);
         try
         {
             __direct.getServant()->__collocDispatch(__direct);
@@ -1481,10 +1485,12 @@ Demo::interfaz::___cambiarTarifa(::IceInternal::Incoming& __inS, const ::Ice::Cu
     __checkMode(::Ice::Normal, __current.mode);
     ::IceInternal::BasicStream* __is = __inS.startReadParams();
     ::std::string dni;
+    ::Ice::Byte tarifa;
     __is->read(dni);
+    __is->read(tarifa);
     __inS.endReadParams();
     ::std::string sout;
-    cambiarTarifa(dni, sout, __current);
+    cambiarTarifa(dni, tarifa, sout, __current);
     ::IceInternal::BasicStream* __os = __inS.__startWriteParams(::Ice::DefaultFormat);
     __os->write(sout);
     __inS.__endWriteParams(true);
