@@ -43,7 +43,7 @@ Demo::interfazI::actualizarDesc(::Ice::Int time,
                                 ::std::string& sout,
                                 const Ice::Current& current)
 {
-  sout = act_desc(time);
+  act_desc(time);
 }
 
 void
