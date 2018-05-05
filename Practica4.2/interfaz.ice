@@ -1,10 +1,10 @@
 module Demo {
  interface interfaz {
-  void check_usr(string dni,out string sout)
-  void altaUsr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned descuento);
-  void bajaUsr(unsigned dni);
+  void checkUsr(string dni,out string sout)
+  void altaUsr(string dni, string nombre, char tarifa, string alta, string descuento);
+  void bajaUsr(string dni);
   void actualizarDesc(int time);
-  void cambiarTarifa(unsigned dni);
+  void cambiarTarifa(string dni);
   void terminar();
  };
 };
