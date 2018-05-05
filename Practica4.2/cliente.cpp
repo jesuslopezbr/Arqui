@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
   string control;
   string nombre;
   char tarifa;
-  unsigned alta;
-  unsigned descuento;
+  string alta;
+  string descuento;
   string fact;
   string dni_s;
   stringstream ss;
