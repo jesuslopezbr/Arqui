@@ -109,6 +109,8 @@ string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsign
 {
 
     int clientes2 = clientes;
+    string sout;
+    stringstream ss;
 
     datos_c1[clientes2].dni = dni;
     datos_c1[clientes2].nombre = nombre;
@@ -117,7 +119,10 @@ string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsign
     datos_c1[clientes2].descuento = desc;
     clientes++;
 
-    return "Cliente con dni " << dni << " añadido.";
+    ss  << "Cliente con dni " << dni << " añadido.";
+    sout = ss.str();
+
+    return sout;
 }
 
 string baja_usr(int i)
@@ -125,6 +130,8 @@ string baja_usr(int i)
   unsigned baja;
   int control = 0;
   int j;
+  string sout;
+  stringstream ss;
 
   for(j = i; j<clientes;j++)
   {
@@ -132,14 +139,20 @@ string baja_usr(int i)
   }
 
   clientes--;
+  ss  << "Cliente con dni " << dni << " dado de baja.";
+  sout = ss.str();
+  return sout;
   pthread_cond_signal(&cambio_desc);
-  return "Cliente con dni " << dni << " dado de baja.";
+
 
 
 }
 
 string cambiar_tarifa(unsigned dni, char tarifa)
 {
+
+  string sout;
+  stringstream ss;
 
   for(i=0; i<clientes; i++)
   {
@@ -153,7 +166,9 @@ string cambiar_tarifa(unsigned dni, char tarifa)
     }
     pthread_mutex_unlock(&clients_mutex);
   }
-  return "Tarifa cambiada a " << tarifa << "." ;
+  ss  << "Tarifa cambiada a " << tarifa << ".";
+  sout = ss.str();
+  return sout;
 }
 
 void *facturacion(void * time)
