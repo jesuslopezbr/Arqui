@@ -1,5 +1,5 @@
 #!/bin/bash
-rm servidor.o interfazI.o controlclientes.o interfaz.o cliente.o
+rm servidor.o interfazI.o controlclientes.o interfaz.o cliente.o servidor cliente
 
 
 if [ $1 == "servidor" ]

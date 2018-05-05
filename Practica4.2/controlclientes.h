@@ -1,3 +1,7 @@
+
+
+using namespace std;
+
 void menu();
 
 void imprimir_datos_c1();

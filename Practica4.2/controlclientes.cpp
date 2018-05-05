@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <controlclientes.h>
 
-using namespace std;
 
 #define MAX_CLIENTES 50
 
