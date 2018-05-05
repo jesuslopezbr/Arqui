@@ -10,7 +10,7 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
                           ::std::string& sout,
                           const Ice::Current& current)
 {
-  unsigned dni2 = strtoul(dni);
+  unsigned dni2 = strtoul(dni,NULL,0);
   sout << check_usr(dni2);
 }
 
@@ -23,8 +23,8 @@ Demo::interfazI::altaUsr(const ::std::string& dni,
                          ::std::string& sout,
                          const Ice::Current& current)
 {
-  unsigned dni2 = strtoul(dni);
-  unsigned alta2 = strtoul(alta);
+  unsigned dni2 = strtoul(dni,NULL,0);
+  unsigned alta2 = sstrtoul(alta,NULL,0);
   unsigned descuento2 = strtoul(descuento);
 
   sout << alta_usr(dni2, nombre, tarifa, alta2, descuento2);
@@ -60,7 +60,7 @@ Demo::interfazI::cambiarTarifa(const ::std::string& dni,
                                ::std::string& sout,
                                const Ice::Current& current)
 {
-  unsigned dni2 = strtoul(dni);
+  unsigned dni2 = strtoul(dni,NULL,0);
   sout << cambiar_tarifa(dni2, tarifa);
 }
 
