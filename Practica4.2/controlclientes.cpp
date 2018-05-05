@@ -76,7 +76,7 @@ string check_usr(unsigned dni, int option) {
       if(dni == datos_c1[i].dni)
       {
         //dni_s = std::to_string(dni);
-        ss  << "El usuario con DNI: " << dni_s << " ya figura en el sistema";
+        ss  << "El usuario con DNI: " << dni << " ya figura en el sistema";
         sout = ss.str();
         return sout;
         break;
@@ -107,7 +107,8 @@ string check_usr(unsigned dni, int option) {
 
 string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
 {
-  int clientes2 = clientes;
+
+    int clientes2 = clientes;
 
     datos_c1[clientes2].dni = dni;
     datos_c1[clientes2].nombre = nombre;
@@ -115,7 +116,8 @@ string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsign
     datos_c1[clientes2].alta = alta;
     datos_c1[clientes2].descuento = desc;
     clientes++;
-    return "Recibida solicitud de alta de cliente.";
+
+    return "Cliente con dni " << dni << " añadido.";
 }
 
 string baja_usr(int i)
@@ -131,7 +133,7 @@ string baja_usr(int i)
 
   clientes--;
   pthread_cond_signal(&cambio_desc);
-  return "Recibida solicitud de baja de cliente.";
+  return "Cliente con dni " << dni << " dado de baja.";
 
 
 }
@@ -151,7 +153,7 @@ string cambiar_tarifa(unsigned dni, char tarifa)
     }
     pthread_mutex_unlock(&clients_mutex);
   }
-  return "Recibida solicitud de cambio de tarifa." ;
+  return "Tarifa cambiada a " << tarifa << "." ;
 }
 
 void *facturacion(void * time)
@@ -184,6 +186,7 @@ void *facturacion(void * time)
       }
       ss << "Nueva facturacion estimada: " << fact << " euros ";
       fact_s = ss.str();
+      fact_c = 1;
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
