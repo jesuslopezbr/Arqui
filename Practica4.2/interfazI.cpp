@@ -64,5 +64,5 @@ void
 Demo::interfazI::terminar(::std::string& sout,
                           const Ice::Current& current)
 {
-  sout << terminarP();
+  terminarP();
 }
