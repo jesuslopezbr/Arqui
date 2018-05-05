@@ -139,7 +139,7 @@ string baja_usr(int i)
   }
 
   clientes--;
-  ss  << "Cliente con dni " << dni << " dado de baja.";
+  ss  << "Cliente dado de baja.";
   sout = ss.str();
   return sout;
   pthread_cond_signal(&cambio_desc);
