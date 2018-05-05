@@ -67,13 +67,13 @@ void clear_fail_state(){
 
 string check_usr(unsigned dni, int option) {
   string sout;
-  std::string dni_s;
+  string dni_s;
   if(option == 0){
     for(i=0; i<clientes; i++)
     {
       if(dni == datos_c1[i].dni)
       {
-        dni_s = std::to_string(dni);
+        dni_s = to_string(dni);
         sout = "El usuario con DNI: " << dni_s << " ya figura en el sistema";
         return sout;
         a = 1;
@@ -86,14 +86,14 @@ string check_usr(unsigned dni, int option) {
       if(dni == datos_c1[i].dni)
       {
 
-       return std::to_string(i);
+       return to_string(i);
       }
     }
   }
   if (option == 0)
     return "Ok";
   else if  (option == 1)
-    dni_s = std::to_string(dni);
+    dni_s = to_string(dni);
     return "El usuario con DNI: " << dni_s << " no esta dado de alta";
   else
   return "";
@@ -175,7 +175,7 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      std::string to_s = std::to_string(fact);
+      to_s = to_string(fact);
       fact_s = "Nueva facturacion estimada: " << to_s << " euros ";
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
