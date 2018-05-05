@@ -1,5 +1,6 @@
 #include "interfaz.h"
 #include <Ice/Ice.h>
+#include <sstream>
 
 using namespace std;
 using namespace Demo;
@@ -10,7 +11,9 @@ unsigned dni_req(){
   cin >> dni;
   if(cin.fail())
   {
-    clear_fail_state();
+    cout << endl << "ERROR -- You did not enter an integer" << endl;
+    cin.clear();
+    cin.ignore(80, '\n');
   }
   if(dni < 10000000 || dni > 99999999)
   {
@@ -18,7 +21,7 @@ unsigned dni_req(){
     return 0;
   }
   else{
-    return alta;
+    return dni;
   }
 }
 
@@ -33,6 +36,8 @@ int main(int argc, char* argv[])
   unsigned alta;
   unsigned descuento;
   string fact;
+  string dni_s;
+  stringstream ss;
 
   Ice::CommunicatorPtr ic;
   try {
@@ -84,7 +89,9 @@ int main(int argc, char* argv[])
           break;
         case 2:
           dni = dni_req();
-          control = remoteService->checkUsr(dni,0);
+          ss << dni;
+          dni_s = ss.str();
+          remoteService->checkUsr(dni_s,0,control);
           if(control == "Ok")
           cout << "Nombre del usuario: ";
           cin >> nombre;
@@ -94,35 +101,40 @@ int main(int argc, char* argv[])
           cin >> alta;
           cout << "Descuento inicial: ";
           cin >> descuento;
-            remoteService->altaUsr(dni, nombre, tarifa, alta, descuento);
+            remoteService->altaUsr(dni_s, nombre, tarifa, alta, descuento,control);
           else
             cout << control << endl;
           break;
         case 3:
           dni = dni_req();
-          control = remoteService->checkUsr(dni,1);
-          if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
+          ss << dni;
+          dni_s = ss.str();
+
+          remoteService->checkUsr(dni_s,1,control);
+          if(control = "El usuario con DNI: " << dni_s << " no esta dado de alta")
             cout << control << endl;
           else{
-            control = remoteService->bajaUsr(control);
+            remoteService->bajaUsr(control,control);
             cout << control << endl;
           }
           break;
         case 4:
           dni = dni_req();
-          control = remoteService->checkUsr(dni,1);
+          ss << dni;
+          dni_s = ss.str();
+          remoteService->checkUsr(dni_s,1,control);
           if(control = "El usuario con DNI: " << dni << " no esta dado de alta")
             cout << control << endl;
           else{
             cin >> tarifa;
-            control = remoteService->cambiarTarifa(dni, tarifa);
+            remoteService->cambiarTarifa(dni_s, tarifa,control);
             cout << control << endl;
           }
           break;
         case 5:
           if(thread_control == 0){
             cout << endl << "Solicitud de activacion de actualizacion de tarifas al servidor central en curso..." << endl;
-            remoteService->actualizarDesc(times);
+            remoteService->actualizarDesc(times,control);
             cout << endl << "Resultado: Actualizacion automatica de tarifas activado en el servidor. " << endl;
             thread_control = 1;
           }else{
@@ -130,7 +142,7 @@ int main(int argc, char* argv[])
           }
           break;
         case 6:
-          remoteService->terminar();
+          remoteService->terminar(control);
           ex = 1;
           break;
         default:
