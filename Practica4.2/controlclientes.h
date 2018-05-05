@@ -21,6 +21,6 @@ void *facturacion(void * time);
 
 void *actualizar_desc(void * time);
 
-void act_desc(int time);
+void act_desc(long time);
 
 void terminarP();
