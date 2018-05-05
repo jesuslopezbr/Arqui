@@ -76,7 +76,7 @@ string check_usr(unsigned dni, int option) {
       if(dni == datos_c1[i].dni)
       {
         //dni_s = std::to_string(dni);
-        ss  = "El usuario con DNI: " << dni_s << " ya figura en el sistema";
+        ss  << "El usuario con DNI: " << dni_s << " ya figura en el sistema";
         sout = ss.str();
         return sout;
         a = 1;
@@ -88,7 +88,7 @@ string check_usr(unsigned dni, int option) {
     {
       if(dni == datos_c1[i].dni)
       {
-        ss = i;
+        ss << i;
         sout = ss.str();
         return sout;
       }
@@ -97,7 +97,7 @@ string check_usr(unsigned dni, int option) {
   if (option == 0)
     return "Ok";
   else if  (option == 1){
-    ss = "El usuario con DNI: " << dni << " no esta dado de alta";
+    ss << "El usuario con DNI: " << dni << " no esta dado de alta";
     //dni_s = std::to_string(dni);
     sout = ss.str();
     return sout;
@@ -183,7 +183,7 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      ss = "Nueva facturacion estimada: " << fact << " euros ";
+      ss << "Nueva facturacion estimada: " << fact << " euros ";
       fact_s = ss.str();
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
