@@ -17,7 +17,7 @@ pthread_cond_t cambio_desc = PTHREAD_COND_INITIALIZER;
 
 int i = 0, clientes = 0, ex = 0;
 int loop = 1;
-string fact;
+string fact_s;
 int fact_c = 0;
 
 struct info_cliente
@@ -66,12 +66,16 @@ void clear_fail_state(){
 }
 
 string check_usr(unsigned dni, int option) {
+  string sout;
+  string dni_s;
   if(option == 0){
     for(i=0; i<clientes; i++)
     {
       if(dni == datos_c1[i].dni)
       {
-        return "El usuario con DNI: " << dni << " ya figura en el sistema";
+        dni_s = to_string(dni);
+        sout = "El usuario con DNI: " << dni_s << " ya figura en el sistema";
+        return sout;
         a = 1;
         break;
       }
@@ -82,14 +86,15 @@ string check_usr(unsigned dni, int option) {
       if(dni == datos_c1[i].dni)
       {
 
-       return i;
+       return to_string(i);
       }
     }
   }
   if (option == 0)
     return "Ok";
   else if  (option == 1)
-    return "El usuario con DNI: " << dni << " no esta dado de alta";
+    dni_s = to_string(dni);
+    return "El usuario con DNI: " << dni_s << " no esta dado de alta";
   else
   return "";
 }
@@ -146,6 +151,7 @@ string cambiar_tarifa(unsigned dni, char tarifa)
 void *facturacion(void * time)
 {
   int fact = 0;
+  string to_S;
 
   do
   {
@@ -169,7 +175,8 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      fact = "Nueva facturacion estimada: " << fact << " euros ";
+      to_s = to_string(fact);
+      fact_s = "Nueva facturacion estimada: " << to_s << " euros ";
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
@@ -256,12 +263,12 @@ void *actualizar_desc(void * time)
 string check_fact(){
   if(fact_c == 1){
     fact_c = 0;
-    return fact;
+    return fact_s;
   }else
     return "";
 }
 
-void act_desc(int time)
+void act_desc(long time)
 {
   int ch = pthread_create(&h_desc, NULL, actualizar_desc, (void *)time);
   cout << endl << "Recibida solicitud de actualizacion de tarifas." << endl;

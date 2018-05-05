@@ -1,5 +1,6 @@
 
 #include <interfazI.h>
+#include <string>
 
 void
 Demo::interfazI::checkUsr(const ::std::string& dni,

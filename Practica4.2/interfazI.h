@@ -2,6 +2,7 @@
 #define __interfazI_h__
 
 #include <interfaz.h>
+#include <controlclientes.h>
 
 namespace Demo
 {

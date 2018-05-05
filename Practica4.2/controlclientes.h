@@ -12,6 +12,8 @@ string baja_usr(int i);
 
 string cambiar_tarifa(unsigned dni, char tarifa);
 
+string check_fact();
+
 void *facturacion(void * time);
 
 void *actualizar_desc(void * time);
