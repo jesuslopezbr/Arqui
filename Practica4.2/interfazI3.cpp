@@ -17,6 +17,7 @@ Demo::interfazI::altaUsr(const ::std::string& dni,
                          ::Ice::Byte tarifa,
                          const ::std::string& alta,
                          const ::std::string& descuento,
+                         ::std::string& sout,
                          const Ice::Current& current)
 {
   unsigned dni2 = stoul(dni);
@@ -28,6 +29,7 @@ Demo::interfazI::altaUsr(const ::std::string& dni,
 
 void
 Demo::interfazI::bajaUsr(const ::std::string& dni,
+                         ::std::string& sout,
                          const Ice::Current& current)
 {
   int i = stoi(value);
@@ -36,13 +38,22 @@ Demo::interfazI::bajaUsr(const ::std::string& dni,
 
 void
 Demo::interfazI::actualizarDesc(::Ice::Int time,
+                                ::std::string& sout,
                                 const Ice::Current& current)
 {
-  sout << act_desc(time);
+    sout << act_desc(time);
+}
+
+void
+Demo::interfazI::checkFact(::std::string& sout,
+                           const Ice::Current& current)
+{
+  sout << check_fact();
 }
 
 void
 Demo::interfazI::cambiarTarifa(const ::std::string& dni,
+                               ::std::string& sout,
                                const Ice::Current& current)
 {
   unsigned dni2 = stoul(dni);
@@ -50,7 +61,8 @@ Demo::interfazI::cambiarTarifa(const ::std::string& dni,
 }
 
 void
-Demo::interfazI::terminar(const Ice::Current& current)
+Demo::interfazI::terminar(::std::string& sout,
+                          const Ice::Current& current)
 {
-  sout << terminarP();
+  terminarP();
 }
