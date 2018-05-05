@@ -4,7 +4,7 @@ module Demo {
   void altaUsr(string dni, string nombre, byte tarifa, string alta, string descuento,out string sout);
   void bajaUsr(string dni, out string sout);
   void actualizarDesc(int time, out string sout);
-  void check_fact(out string sout);
+  void checkFact(out string sout);
   void cambiarTarifa(string dni, out string sout);
   void terminar(out string sout);
  };
