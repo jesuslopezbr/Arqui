@@ -2,6 +2,7 @@
 #include <controlclientes.h>
 #include <interfazI.h>
 #include <string>
+#include <iostream>
 
 void
 Demo::interfazI::checkUsr(const ::std::string& dni,
