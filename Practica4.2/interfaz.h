@@ -79,6 +79,9 @@ void __patch(interfazPtr&, const ::Ice::ObjectPtr&);
 namespace Demo
 {
 
+class Callback_interfaz_checkUsr_Base : virtual public ::IceInternal::CallbackBase { };
+typedef ::IceUtil::Handle< Callback_interfaz_checkUsr_Base> Callback_interfaz_checkUsrPtr;
+
 class Callback_interfaz_altaUsr_Base : virtual public ::IceInternal::CallbackBase { };
 typedef ::IceUtil::Handle< Callback_interfaz_altaUsr_Base> Callback_interfaz_altaUsrPtr;
 
@@ -106,143 +109,256 @@ class interfaz : virtual public ::IceProxy::Ice::Object
 {
 public:
 
-    void altaUsr()
+    void checkUsr(const ::std::string& dni, ::std::string& sout)
     {
-        altaUsr(0);
+        checkUsr(dni, sout, 0);
     }
-    void altaUsr(const ::Ice::Context& __ctx)
+    void checkUsr(const ::std::string& dni, ::std::string& sout, const ::Ice::Context& __ctx)
     {
-        altaUsr(&__ctx);
+        checkUsr(dni, sout, &__ctx);
     }
 #ifdef ICE_CPP11
     ::Ice::AsyncResultPtr
-    begin_altaUsr(const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_checkUsr(const ::std::string& dni, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_altaUsr(0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
+        return __begin_checkUsr(dni, 0, __response, __exception, __sent);
     }
     ::Ice::AsyncResultPtr
-    begin_altaUsr(const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_checkUsr(const ::std::string& dni, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_altaUsr(0, ::Ice::newCallback(__completed, __sent), 0);
+        return begin_checkUsr(dni, 0, ::Ice::newCallback(__completed, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_altaUsr(const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_checkUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_altaUsr(&__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
+        return __begin_checkUsr(dni, &__ctx, __response, __exception, __sent);
     }
     ::Ice::AsyncResultPtr
-    begin_altaUsr(const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_checkUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_altaUsr(&__ctx, ::Ice::newCallback(__completed, __sent));
+        return begin_checkUsr(dni, &__ctx, ::Ice::newCallback(__completed, __sent));
+    }
+    
+private:
+
+    ::Ice::AsyncResultPtr __begin_checkUsr(const ::std::string& dni, const ::Ice::Context* __ctx, const ::IceInternal::Function<void (const ::std::string&)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception, const ::IceInternal::Function<void (bool)>& __sent)
+    {
+        class Cpp11CB : public ::IceInternal::Cpp11FnCallbackNC
+        {
+        public:
+
+            Cpp11CB(const ::std::function<void (const ::std::string&)>& responseFunc, const ::std::function<void (const ::Ice::Exception&)>& exceptionFunc, const ::std::function<void (bool)>& sentFunc) :
+                ::IceInternal::Cpp11FnCallbackNC(exceptionFunc, sentFunc),
+                _response(responseFunc)
+            {
+                CallbackBase::checkCallback(true, responseFunc || exceptionFunc != nullptr);
+            }
+
+            virtual void __completed(const ::Ice::AsyncResultPtr& __result) const
+            {
+                ::Demo::interfazPrx __proxy = ::Demo::interfazPrx::uncheckedCast(__result->getProxy());
+                ::std::string sout;
+                try
+                {
+                    __proxy->end_checkUsr(sout, __result);
+                }
+                catch(::Ice::Exception& ex)
+                {
+                    Cpp11FnCallbackNC::__exception(__result, ex);
+                    return;
+                }
+                if(_response != nullptr)
+                {
+                    _response(sout);
+                }
+            }
+        
+        private:
+            
+            ::std::function<void (const ::std::string&)> _response;
+        };
+        return begin_checkUsr(dni, __ctx, new Cpp11CB(__response, __exception, __sent));
+    }
+    
+public:
+#endif
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni)
+    {
+        return begin_checkUsr(dni, 0, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni, const ::Ice::Context& __ctx)
+    {
+        return begin_checkUsr(dni, &__ctx, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_checkUsr(dni, 0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_checkUsr(dni, &__ctx, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni, const ::Demo::Callback_interfaz_checkUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_checkUsr(dni, 0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_checkUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_checkUsr(dni, &__ctx, __del, __cookie);
+    }
+
+    void end_checkUsr(::std::string& sout, const ::Ice::AsyncResultPtr&);
+    
+private:
+
+    void checkUsr(const ::std::string&, ::std::string&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_checkUsr(const ::std::string&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    
+public:
+
+    void altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento)
+    {
+        altaUsr(dni, nombre, tarifa, alta, descuento, 0);
+    }
+    void altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx)
+    {
+        altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx);
+    }
+#ifdef ICE_CPP11
+    ::Ice::AsyncResultPtr
+    begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    {
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, 0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
+    }
+    ::Ice::AsyncResultPtr
+    begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    {
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, 0, ::Ice::newCallback(__completed, __sent), 0);
+    }
+    ::Ice::AsyncResultPtr
+    begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    {
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
+    }
+    ::Ice::AsyncResultPtr
+    begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    {
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx, ::Ice::newCallback(__completed, __sent));
     }
 #endif
 
-    ::Ice::AsyncResultPtr begin_altaUsr()
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento)
     {
-        return begin_altaUsr(0, ::IceInternal::__dummyCallback, 0);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, 0, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Ice::Context& __ctx)
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx)
     {
-        return begin_altaUsr(&__ctx, ::IceInternal::__dummyCallback, 0);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_altaUsr(0, __del, __cookie);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_altaUsr(&__ctx, __del, __cookie);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Demo::Callback_interfaz_altaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Demo::Callback_interfaz_altaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_altaUsr(0, __del, __cookie);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_altaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string& dni, const ::std::string& nombre, ::Ice::Byte tarifa, const ::std::string& alta, const ::std::string& descuento, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_altaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_altaUsr(&__ctx, __del, __cookie);
+        return begin_altaUsr(dni, nombre, tarifa, alta, descuento, &__ctx, __del, __cookie);
     }
 
     void end_altaUsr(const ::Ice::AsyncResultPtr&);
     
 private:
 
-    void altaUsr(const ::Ice::Context*);
-    ::Ice::AsyncResultPtr begin_altaUsr(const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    void altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
 
-    void bajaUsr()
+    void bajaUsr(const ::std::string& dni)
     {
-        bajaUsr(0);
+        bajaUsr(dni, 0);
     }
-    void bajaUsr(const ::Ice::Context& __ctx)
+    void bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx)
     {
-        bajaUsr(&__ctx);
+        bajaUsr(dni, &__ctx);
     }
 #ifdef ICE_CPP11
     ::Ice::AsyncResultPtr
-    begin_bajaUsr(const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_bajaUsr(const ::std::string& dni, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_bajaUsr(0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
+        return begin_bajaUsr(dni, 0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
     }
     ::Ice::AsyncResultPtr
-    begin_bajaUsr(const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_bajaUsr(const ::std::string& dni, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_bajaUsr(0, ::Ice::newCallback(__completed, __sent), 0);
+        return begin_bajaUsr(dni, 0, ::Ice::newCallback(__completed, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_bajaUsr(const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_bajaUsr(&__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
+        return begin_bajaUsr(dni, &__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_bajaUsr(const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_bajaUsr(&__ctx, ::Ice::newCallback(__completed, __sent));
+        return begin_bajaUsr(dni, &__ctx, ::Ice::newCallback(__completed, __sent));
     }
 #endif
 
-    ::Ice::AsyncResultPtr begin_bajaUsr()
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni)
     {
-        return begin_bajaUsr(0, ::IceInternal::__dummyCallback, 0);
+        return begin_bajaUsr(dni, 0, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Ice::Context& __ctx)
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx)
     {
-        return begin_bajaUsr(&__ctx, ::IceInternal::__dummyCallback, 0);
+        return begin_bajaUsr(dni, &__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_bajaUsr(0, __del, __cookie);
+        return begin_bajaUsr(dni, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_bajaUsr(&__ctx, __del, __cookie);
+        return begin_bajaUsr(dni, &__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Demo::Callback_interfaz_bajaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni, const ::Demo::Callback_interfaz_bajaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_bajaUsr(0, __del, __cookie);
+        return begin_bajaUsr(dni, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_bajaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_bajaUsrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_bajaUsr(&__ctx, __del, __cookie);
+        return begin_bajaUsr(dni, &__ctx, __del, __cookie);
     }
 
     void end_bajaUsr(const ::Ice::AsyncResultPtr&);
     
 private:
 
-    void bajaUsr(const ::Ice::Context*);
-    ::Ice::AsyncResultPtr begin_bajaUsr(const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    void bajaUsr(const ::std::string&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_bajaUsr(const ::std::string&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
 
@@ -316,73 +432,73 @@ private:
     
 public:
 
-    void cambiarTarifa()
+    void cambiarTarifa(const ::std::string& dni)
     {
-        cambiarTarifa(0);
+        cambiarTarifa(dni, 0);
     }
-    void cambiarTarifa(const ::Ice::Context& __ctx)
+    void cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx)
     {
-        cambiarTarifa(&__ctx);
+        cambiarTarifa(dni, &__ctx);
     }
 #ifdef ICE_CPP11
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_cambiarTarifa(const ::std::string& dni, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_cambiarTarifa(0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
+        return begin_cambiarTarifa(dni, 0, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent));
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_cambiarTarifa(const ::std::string& dni, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_cambiarTarifa(0, ::Ice::newCallback(__completed, __sent), 0);
+        return begin_cambiarTarifa(dni, 0, ::Ice::newCallback(__completed, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void ()>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
     {
-        return begin_cambiarTarifa(&__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
+        return begin_cambiarTarifa(dni, &__ctx, new ::IceInternal::Cpp11FnOnewayCallbackNC(__response, __exception, __sent), 0);
     }
     ::Ice::AsyncResultPtr
-    begin_cambiarTarifa(const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
     {
-        return begin_cambiarTarifa(&__ctx, ::Ice::newCallback(__completed, __sent));
+        return begin_cambiarTarifa(dni, &__ctx, ::Ice::newCallback(__completed, __sent));
     }
 #endif
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa()
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni)
     {
-        return begin_cambiarTarifa(0, ::IceInternal::__dummyCallback, 0);
+        return begin_cambiarTarifa(dni, 0, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Ice::Context& __ctx)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx)
     {
-        return begin_cambiarTarifa(&__ctx, ::IceInternal::__dummyCallback, 0);
+        return begin_cambiarTarifa(dni, &__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(0, __del, __cookie);
+        return begin_cambiarTarifa(dni, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(&__ctx, __del, __cookie);
+        return begin_cambiarTarifa(dni, &__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(0, __del, __cookie);
+        return begin_cambiarTarifa(dni, 0, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string& dni, const ::Ice::Context& __ctx, const ::Demo::Callback_interfaz_cambiarTarifaPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return begin_cambiarTarifa(&__ctx, __del, __cookie);
+        return begin_cambiarTarifa(dni, &__ctx, __del, __cookie);
     }
 
     void end_cambiarTarifa(const ::Ice::AsyncResultPtr&);
     
 private:
 
-    void cambiarTarifa(const ::Ice::Context*);
-    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    void cambiarTarifa(const ::std::string&, const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_cambiarTarifa(const ::std::string&, const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
 
@@ -579,13 +695,15 @@ class interfaz : virtual public ::IceDelegate::Ice::Object
 {
 public:
 
-    virtual void altaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
+    virtual void checkUsr(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
-    virtual void bajaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
+    virtual void altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
+
+    virtual void bajaUsr(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
     virtual void actualizarDesc(::Ice::Int, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
-    virtual void cambiarTarifa(const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
+    virtual void cambiarTarifa(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 
     virtual void terminar(const ::Ice::Context*, ::IceInternal::InvocationObserver&) = 0;
 };
@@ -605,13 +723,15 @@ class interfaz : virtual public ::IceDelegate::Demo::interfaz,
 {
 public:
 
-    virtual void altaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void checkUsr(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void bajaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+
+    virtual void bajaUsr(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void actualizarDesc(::Ice::Int, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void cambiarTarifa(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void cambiarTarifa(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void terminar(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 };
@@ -631,13 +751,15 @@ class interfaz : virtual public ::IceDelegate::Demo::interfaz,
 {
 public:
 
-    virtual void altaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void checkUsr(const ::std::string&, ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void bajaUsr(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+
+    virtual void bajaUsr(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void actualizarDesc(::Ice::Int, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
-    virtual void cambiarTarifa(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
+    virtual void cambiarTarifa(const ::std::string&, const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 
     virtual void terminar(const ::Ice::Context*, ::IceInternal::InvocationObserver&);
 };
@@ -661,16 +783,19 @@ public:
     virtual const ::std::string& ice_id(const ::Ice::Current& = ::Ice::Current()) const;
     static const ::std::string& ice_staticId();
 
-    virtual void altaUsr(const ::Ice::Current& = ::Ice::Current()) = 0;
+    virtual void checkUsr(const ::std::string&, ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
+    ::Ice::DispatchStatus ___checkUsr(::IceInternal::Incoming&, const ::Ice::Current&);
+
+    virtual void altaUsr(const ::std::string&, const ::std::string&, ::Ice::Byte, const ::std::string&, const ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___altaUsr(::IceInternal::Incoming&, const ::Ice::Current&);
 
-    virtual void bajaUsr(const ::Ice::Current& = ::Ice::Current()) = 0;
+    virtual void bajaUsr(const ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___bajaUsr(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual void actualizarDesc(::Ice::Int, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___actualizarDesc(::IceInternal::Incoming&, const ::Ice::Current&);
 
-    virtual void cambiarTarifa(const ::Ice::Current& = ::Ice::Current()) = 0;
+    virtual void cambiarTarifa(const ::std::string&, const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___cambiarTarifa(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual void terminar(const ::Ice::Current& = ::Ice::Current()) = 0;
@@ -701,6 +826,106 @@ inline bool operator<(const interfaz& l, const interfaz& r)
 
 namespace Demo
 {
+
+template<class T>
+class CallbackNC_interfaz_checkUsr : public Callback_interfaz_checkUsr_Base, public ::IceInternal::TwowayCallbackNC<T>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception&);
+    typedef void (T::*Sent)(bool);
+    typedef void (T::*Response)(const ::std::string&);
+
+    CallbackNC_interfaz_checkUsr(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), response(cb)
+    {
+    }
+
+    virtual void __completed(const ::Ice::AsyncResultPtr& __result) const
+    {
+        ::Demo::interfazPrx __proxy = ::Demo::interfazPrx::uncheckedCast(__result->getProxy());
+        ::std::string sout;
+        try
+        {
+            __proxy->end_checkUsr(sout, __result);
+        }
+        catch(::Ice::Exception& ex)
+        {
+            ::IceInternal::CallbackNC<T>::__exception(__result, ex);
+            return;
+        }
+        if(response)
+        {
+            (::IceInternal::CallbackNC<T>::callback.get()->*response)(sout);
+        }
+    }
+
+    Response response;
+};
+
+template<class T> Callback_interfaz_checkUsrPtr
+newCallback_interfaz_checkUsr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_interfaz_checkUsr<T>(instance, cb, excb, sentcb);
+}
+
+template<class T> Callback_interfaz_checkUsrPtr
+newCallback_interfaz_checkUsr(T* instance, void (T::*cb)(const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_interfaz_checkUsr<T>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT>
+class Callback_interfaz_checkUsr : public Callback_interfaz_checkUsr_Base, public ::IceInternal::TwowayCallback<T, CT>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
+    typedef void (T::*Sent)(bool , const CT&);
+    typedef void (T::*Response)(const ::std::string&, const CT&);
+
+    Callback_interfaz_checkUsr(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), response(cb)
+    {
+    }
+
+    virtual void __completed(const ::Ice::AsyncResultPtr& __result) const
+    {
+        ::Demo::interfazPrx __proxy = ::Demo::interfazPrx::uncheckedCast(__result->getProxy());
+        ::std::string sout;
+        try
+        {
+            __proxy->end_checkUsr(sout, __result);
+        }
+        catch(::Ice::Exception& ex)
+        {
+            ::IceInternal::Callback<T, CT>::__exception(__result, ex);
+            return;
+        }
+        if(response)
+        {
+            (::IceInternal::Callback<T, CT>::callback.get()->*response)(sout, CT::dynamicCast(__result->getCookie()));
+        }
+    }
+
+    Response response;
+};
+
+template<class T, typename CT> Callback_interfaz_checkUsrPtr
+newCallback_interfaz_checkUsr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_interfaz_checkUsr<T, CT>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT> Callback_interfaz_checkUsrPtr
+newCallback_interfaz_checkUsr(T* instance, void (T::*cb)(const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_interfaz_checkUsr<T, CT>(instance, cb, excb, sentcb);
+}
 
 template<class T>
 class CallbackNC_interfaz_altaUsr : public Callback_interfaz_altaUsr_Base, public ::IceInternal::OnewayCallbackNC<T>
