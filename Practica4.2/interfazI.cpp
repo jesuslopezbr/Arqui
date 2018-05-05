@@ -3,6 +3,9 @@
 #include <string>
 #include <controlclientes.h>
 
+
+using namespace std;
+
 void
 Demo::interfazI::checkUsr(const ::std::string& dni,
                           ::std::string& sout,
