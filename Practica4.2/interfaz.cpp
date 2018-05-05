@@ -74,7 +74,7 @@ void
 }
 
 void
-IceProxy::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __ctx)
+IceProxy::Demo::interfaz::checkUsr(const ::std::string& dni, ::Ice::Int opcion, ::std::string& sout, const ::Ice::Context* __ctx)
 {
     ::IceInternal::InvocationObserver __observer(this, __Demo__interfaz__checkUsr_name, __ctx);
     int __cnt = 0;
@@ -86,7 +86,7 @@ IceProxy::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& sout
             __checkTwowayOnly(__Demo__interfaz__checkUsr_name);
             __delBase = __getDelegate(false);
             ::IceDelegate::Demo::interfaz* __del = dynamic_cast< ::IceDelegate::Demo::interfaz*>(__delBase.get());
-            __del->checkUsr(dni, sout, __ctx, __observer);
+            __del->checkUsr(dni, opcion, sout, __ctx, __observer);
             return;
         }
         catch(const ::IceInternal::LocalExceptionWrapper& __ex)
@@ -101,7 +101,7 @@ IceProxy::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& sout
 }
 
 ::Ice::AsyncResultPtr
-IceProxy::Demo::interfaz::begin_checkUsr(const ::std::string& dni, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
+IceProxy::Demo::interfaz::begin_checkUsr(const ::std::string& dni, ::Ice::Int opcion, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
 {
     __checkAsyncTwowayOnly(__Demo__interfaz__checkUsr_name);
     ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Demo__interfaz__checkUsr_name, __del, __cookie);
@@ -110,6 +110,7 @@ IceProxy::Demo::interfaz::begin_checkUsr(const ::std::string& dni, const ::Ice::
         __result->__prepare(__Demo__interfaz__checkUsr_name, ::Ice::Normal, __ctx);
         ::IceInternal::BasicStream* __os = __result->__startWriteParams(::Ice::DefaultFormat);
         __os->write(dni);
+        __os->write(opcion);
         __result->__endWriteParams();
         __result->__send(true);
     }
@@ -631,13 +632,14 @@ IceProxy::Demo::interfaz::__newInstance() const
 }
 
 void
-IceDelegateM::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver& __observer)
+IceDelegateM::Demo::interfaz::checkUsr(const ::std::string& dni, ::Ice::Int opcion, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver& __observer)
 {
     ::IceInternal::Outgoing __og(__handler.get(), __Demo__interfaz__checkUsr_name, ::Ice::Normal, __context, __observer);
     try
     {
         ::IceInternal::BasicStream* __os = __og.startWriteParams(::Ice::DefaultFormat);
         __os->write(dni);
+        __os->write(opcion);
         __og.endWriteParams();
     }
     catch(const ::Ice::LocalException& __ex)
@@ -891,15 +893,16 @@ IceDelegateM::Demo::interfaz::terminar(::std::string& sout, const ::Ice::Context
 }
 
 void
-IceDelegateD::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver&)
+IceDelegateD::Demo::interfaz::checkUsr(const ::std::string& dni, ::Ice::Int opcion, ::std::string& sout, const ::Ice::Context* __context, ::IceInternal::InvocationObserver&)
 {
     class _DirectI : public ::IceInternal::Direct
     {
     public:
 
-        _DirectI(const ::std::string& __p_dni, ::std::string& __p_sout, const ::Ice::Current& __current) : 
+        _DirectI(const ::std::string& __p_dni, ::Ice::Int __p_opcion, ::std::string& __p_sout, const ::Ice::Current& __current) : 
             ::IceInternal::Direct(__current),
             _m_dni(__p_dni),
+            _m_opcion(__p_opcion),
             _m_sout(__p_sout)
         {
         }
@@ -912,13 +915,14 @@ IceDelegateD::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& 
             {
                 throw ::Ice::OperationNotExistException(__FILE__, __LINE__, _current.id, _current.facet, _current.operation);
             }
-            servant->checkUsr(_m_dni, _m_sout, _current);
+            servant->checkUsr(_m_dni, _m_opcion, _m_sout, _current);
             return ::Ice::DispatchOK;
         }
         
     private:
         
         const ::std::string& _m_dni;
+        ::Ice::Int _m_opcion;
         ::std::string& _m_sout;
     };
     
@@ -926,7 +930,7 @@ IceDelegateD::Demo::interfaz::checkUsr(const ::std::string& dni, ::std::string& 
     __initCurrent(__current, __Demo__interfaz__checkUsr_name, ::Ice::Normal, __context);
     try
     {
-        _DirectI __direct(dni, sout, __current);
+        _DirectI __direct(dni, opcion, sout, __current);
         try
         {
             __direct.getServant()->__collocDispatch(__direct);
@@ -1400,10 +1404,12 @@ Demo::interfaz::___checkUsr(::IceInternal::Incoming& __inS, const ::Ice::Current
     __checkMode(::Ice::Normal, __current.mode);
     ::IceInternal::BasicStream* __is = __inS.startReadParams();
     ::std::string dni;
+    ::Ice::Int opcion;
     __is->read(dni);
+    __is->read(opcion);
     __inS.endReadParams();
     ::std::string sout;
-    checkUsr(dni, sout, __current);
+    checkUsr(dni, opcion, sout, __current);
     ::IceInternal::BasicStream* __os = __inS.__startWriteParams(::Ice::DefaultFormat);
     __os->write(sout);
     __inS.__endWriteParams(true);
