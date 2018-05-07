@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
           break;
         case 3:
           dni = dni_req();
-          ss << "El usuario con DNI: " << dni << " no esta dado de alta";
+          ss << dni;
           dni_s = ss.str();
 
           remoteService->checkUsr(dni_s,1,control);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
           break;
         case 4:
           dni = dni_req();
-          ss << "El usuario con DNI: " << dni << " no esta dado de alta";
+          ss << dni;
           dni_s = ss.str();
           remoteService->checkUsr(dni_s,1,control);
           if(control == dni_s)
