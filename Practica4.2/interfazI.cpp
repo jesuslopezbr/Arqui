@@ -12,9 +12,7 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
                           ::std::string& sout,
                           const Ice::Current& current)
 {
-  cout << endl << dni << endl;
   unsigned dni2 = stoul(dni,nullptr,0);
-  cout << dni2 << endl;
   sout = check_usr(dni2,opcion);
 }
 
@@ -41,7 +39,7 @@ Demo::interfazI::bajaUsr(const ::std  ::string& dni,
                          const Ice::Current& current)
 {
   cout << "Recibida solicitud de baja de cliente." << endl;
-  int i = stoi(dni,nullptr,0);
+  int i = stoi(dni,NULL,0);
   sout = baja_usr(i);
 }
 
