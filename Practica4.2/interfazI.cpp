@@ -13,8 +13,9 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
                           const Ice::Current& current)
 {
   cout << endl << dni << endl;
-  unsigned dni2 = stoul(dni,NULL,0);
+  unsigned dni2 = stoul(dni,nullptr,0);
   cout << dni2 << endl;
+  dni.clear();
   sout = check_usr(dni2,opcion);
 }
 
