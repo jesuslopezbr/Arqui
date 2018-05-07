@@ -11,7 +11,7 @@ class interfazI : virtual public interfaz
 {
 public:
 
-    virtual void checkUsr(const ::std::string&,
+    virtual void checkUsr(::std::string&,
                           ::Ice::Int,
                           ::std::string&,
                           const Ice::Current&);
