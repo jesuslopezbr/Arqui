@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
           dni = dni_req();
           ss << dni;
           dni_s = ss.str();
+          cout << dni_s;
           remoteService->checkUsr(dni_s,0,control);
           if(control == "Ok"){
             cout << "Nombre del usuario: ";
@@ -106,7 +107,7 @@ int main(int argc, char* argv[])
             }
           else
             cout << control << endl;
-          dni_s.clear();
+          ss.str("");
           break;
         case 3:
           dni = dni_req();
