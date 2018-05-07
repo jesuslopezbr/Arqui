@@ -129,6 +129,7 @@ int main(int argc, char* argv[])
           if(control != "Ok")
             cout << control << endl;
           else{
+            cout << endl << "Nueva Tarifa: ";
             cin >> tarifa;
             remoteService->cambiarTarifa(dni_s, tarifa,control);
             cout << control << endl;
