@@ -15,6 +15,7 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
   cout << endl << dni << endl;
   unsigned dni2 = stoul(dni,nullptr,0);
   cout << dni2 << endl;
+  dni = NULL;
   sout = check_usr(dni2,opcion);
 }
 
