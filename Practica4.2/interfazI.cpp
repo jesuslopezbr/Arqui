@@ -12,7 +12,7 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
                           ::std::string& sout,
                           const Ice::Current& current)
 {
-  unsigned dni2 = stoul(dni,NULL,0);
+  unsigned dni2 = stoul(dni,nullptr,0);
   cout << dni2 << endl;
   sout = check_usr(dni2,opcion);
 }
@@ -27,9 +27,9 @@ Demo::interfazI::altaUsr(const ::std::string& dni,
                          const Ice::Current& current)
 {
   cout << "Recibida solicitud de alta de cliente." << endl;
-  unsigned dni2 = stoul(dni,NULL,0);
-  unsigned alta2 = stoul(alta,NULL,0);
-  unsigned descuento2 = stoul(descuento,NULL,0);
+  unsigned dni2 = stoul(dni,nullptr,0);
+  unsigned alta2 = stoul(alta,nullptr,0);
+  unsigned descuento2 = stoul(descuento,nullptr,0);
 
   sout = alta_usr(dni2, nombre, tarifa, alta2, descuento2);
 }
@@ -40,7 +40,7 @@ Demo::interfazI::bajaUsr(const ::std  ::string& dni,
                          const Ice::Current& current)
 {
   cout << "Recibida solicitud de baja de cliente." << endl;
-  int i = stoi(dni,NULL,0);
+  int i = stoi(dni,nullptr,0);
   sout = baja_usr(i);
 }
 
@@ -66,7 +66,7 @@ Demo::interfazI::cambiarTarifa(const ::std::string& dni,
                                const Ice::Current& current)
 {
   cout << "Recibida solicitud de cambio de tarifa." << endl;
-  unsigned dni2 = stoul(dni,NULL,0);
+  unsigned dni2 = stoul(dni,nullptr,0);
   sout = cambiar_tarifa(dni2, tarifa);
 }
 
