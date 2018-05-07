@@ -7,7 +7,7 @@
 using namespace std;
 
 void
-Demo::interfazI::checkUsr(const ::std::string& dni,
+Demo::interfazI::checkUsr(::std::string& dni,
                           ::Ice::Int opcion,
                           ::std::string& sout,
                           const Ice::Current& current)

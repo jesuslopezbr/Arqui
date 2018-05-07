@@ -89,7 +89,6 @@ int main(int argc, char* argv[])
           break;
         case 2:
           dni = dni_req();
-          cout << dni;
           ss << dni;
           dni_s = ss.str();
           remoteService->checkUsr(dni_s,0,control);
