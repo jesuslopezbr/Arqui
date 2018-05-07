@@ -125,8 +125,8 @@ int main(int argc, char* argv[])
           dni = dni_req();
           ss << dni;
           dni_s = ss.str();
-          remoteService->checkUsr(dni_s,1,control);
-          if(control == dni_s)
+          remoteService->checkUsr(dni_s,2,control);
+          if(control != "Ok")
             cout << control << endl;
           else{
             cin >> tarifa;

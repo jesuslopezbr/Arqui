@@ -91,12 +91,20 @@ string check_usr(unsigned dni, int option) {
         return sout;
       }
     }
+  }else if(option == 2){
+    for(i=0; i<clientes; i++)
+    {
+      if(dni == datos_c1[i].dni)
+      {
+        return "Ok";
+      }
+    }
+
   }
   if (option == 0)
     return "Ok";
-  else if  (option == 1){
+  else if  (option == 1 || option == 2){
     ss << "El usuario con DNI: " << dni << " no esta dado de alta";
-    //dni_s = std::to_string(dni);
     sout = ss.str();
     return sout;
   }
