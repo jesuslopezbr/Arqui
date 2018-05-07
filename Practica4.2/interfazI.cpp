@@ -7,13 +7,13 @@
 using namespace std;
 
 void
-Demo::interfazI::checkUsr(::std::string& dni,
+Demo::interfazI::checkUsr(const ::std::string& dni,
                           ::Ice::Int opcion,
                           ::std::string& sout,
                           const Ice::Current& current)
 {
   cout << endl << dni << endl;
-  unsigned dni2 = stoul(dni,nullptr,0);
+  unsigned dni2 = stoul(dni,NULL,0);
   cout << dni2 << endl;
   sout = check_usr(dni2,opcion);
 }
