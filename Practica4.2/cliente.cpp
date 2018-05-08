@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
         case 6:
           remoteService->terminar(control);
           ic->shutdown();
-          cout << "Server shutdown" << endl;
+          cout << "Cliente terminado" << endl;
           exi = 1;
           break;
         default:

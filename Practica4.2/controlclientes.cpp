@@ -229,7 +229,7 @@ void *facturacion(void * time)
             fact += 300;
           }
       }
-      ss << "Nueva facturacion estimada: " << fact << " euros ";
+      ss << endl << "Nueva facturacion estimada: " << fact << " euros ";
       pthread_mutex_lock(&fact_mutex);
       fact_s = ss.str();
       fact_c = 1;
@@ -346,7 +346,7 @@ void terminarP()
 
   pthread_join(h_desc,NULL);
   cout << endl << "Recibida solicitud de terminacion.";
-  cout << endl << "Servidor terminado!" << endl << endl;
+  cout << endl << "Cliente terminado!" << endl << endl;
 
 
 }
