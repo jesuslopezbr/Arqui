@@ -27,7 +27,9 @@ unsigned dni_req(){
 
 int main(int argc, char* argv[])
 {
-
+  string port = argv[2];
+  string ip = argv[3];
+  string
   int status = 0, opcion = 0;
   unsigned dni;
   string control;
@@ -43,7 +45,7 @@ int main(int argc, char* argv[])
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -h 163.117.144.211 -p 10000");
+    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -h" << ip << "-p " << port);
 
     interfazPrx remoteService = interfazPrx::checkedCast(base);
     if (!remoteService)

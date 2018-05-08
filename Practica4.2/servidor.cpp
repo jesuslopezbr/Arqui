@@ -6,13 +6,14 @@ using namespace Demo;
 
 int main(int argc, char* argv[])
 {
+  string port = argv[1];
  int status = 0;
  Ice::CommunicatorPtr ic;
  try {
    ic = Ice::initialize(argc, argv);
    Ice::ObjectAdapterPtr adapter =
    ic->createObjectAdapterWithEndpoints("asii_adapter",
-   "default -p 10000");
+   "default -p " << port);
    Ice::ObjectPtr object = new interfazI;
    adapter->add(object, ic->stringToIdentity("interfaz"));
    adapter->activate();

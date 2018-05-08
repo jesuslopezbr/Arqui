@@ -243,7 +243,6 @@ void *facturacion(void * time)
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
-  cout << "facur terminado" << endl;
   pthread_mutex_unlock(&loop_mutex);
   pthread_exit(NULL);
 }
@@ -310,7 +309,6 @@ void *actualizar_desc(void * time)
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
-  cout << "actualizar desc terminado" << endl;
   pthread_mutex_unlock(&loop_mutex);
   pthread_cond_signal(&cambio_desc);
   pthread_join(h_factura,NULL);
