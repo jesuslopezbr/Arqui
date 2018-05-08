@@ -15,9 +15,10 @@ using namespace std;
 pthread_t h_desc, h_factura;
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t loop_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t fact_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cambio_desc = PTHREAD_COND_INITIALIZER;
 
-int i = 0, clientes = 0, ex = 0;
+int i = 0, clientes = 0;
 int loop = 1;
 string fact_s;
 int fact_c = 0;
@@ -46,6 +47,7 @@ void menu()
 }
 void imprimir_datos_c1()
 {
+  pthread_mutex_lock(&clients_mutex);
   if(datos_c1[0].dni == 0)
   {
     cout << endl << "No hay clientes dados de alta" << endl;
@@ -58,6 +60,7 @@ void imprimir_datos_c1()
       cout << i+1 << ": " << datos_c1[i].dni << " | " << datos_c1[i].nombre << " | " << datos_c1[i].tarifa << " | " << datos_c1[i].alta << " | " << datos_c1[i].descuento << endl;
     }
   }
+  pthread_mutex_unlock(&clients_mutex);
 }
 
 void clear_fail_state(){
@@ -67,9 +70,11 @@ void clear_fail_state(){
 }
 
 string check_usr(unsigned dni, int option) {
+  imprimir_datos_c1();
   string sout;
   string dni_s;
   stringstream ss;
+  pthread_mutex_lock(&clients_mutex);
   if(option == 0){
     for(i=0; i<clientes; i++)
     {
@@ -78,6 +83,7 @@ string check_usr(unsigned dni, int option) {
         //dni_s = std::to_string(dni);
         ss  << "El usuario con DNI: " << dni << " ya figura en el sistema";
         sout = ss.str();
+        pthread_mutex_unlock(&clients_mutex);
         return sout;
       }
     }
@@ -88,6 +94,7 @@ string check_usr(unsigned dni, int option) {
       {
         ss << i;
         sout = ss.str();
+        pthread_mutex_unlock(&clients_mutex);
         return sout;
       }
     }
@@ -96,20 +103,26 @@ string check_usr(unsigned dni, int option) {
     {
       if(dni == datos_c1[i].dni)
       {
+        pthread_mutex_unlock(&clients_mutex);
         return "Ok";
       }
     }
 
   }
-  if (option == 0)
+  if (option == 0){
+    pthread_mutex_unlock(&clients_mutex);
     return "Ok";
+  }
   else if  (option == 1 || option == 2){
     ss << "El usuario con DNI: " << dni << " no esta dado de alta";
     sout = ss.str();
+    pthread_mutex_unlock(&clients_mutex);
     return sout;
   }
-  else
-  return "";
+  else{
+    pthread_mutex_unlock(&clients_mutex);
+    return "";
+  }
 }
 
 string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
@@ -118,16 +131,18 @@ string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsign
     int clientes2 = clientes;
     string sout;
     stringstream ss;
-
+    pthread_mutex_lock(&clients_mutex);
     datos_c1[clientes2].dni = dni;
     datos_c1[clientes2].nombre = nombre;
     datos_c1[clientes2].tarifa = tarifa;
     datos_c1[clientes2].alta = alta;
     datos_c1[clientes2].descuento = desc;
     clientes++;
-
+    pthread_mutex_unlock(&clients_mutex);
     ss  << "Cliente con dni " << dni << " añadido.";
     sout = ss.str();
+
+    imprimir_datos_c1();
 
     return sout;
 }
@@ -139,18 +154,23 @@ string baja_usr(int i)
   int j;
   string sout;
   stringstream ss;
-
+  pthread_mutex_lock(&clients_mutex);
   for(j = i; j<clientes;j++)
   {
+
     datos_c1[j]=datos_c1[j+1];
+
   }
 
   clientes--;
+  pthread_mutex_unlock(&clients_mutex);
   ss  << "Cliente dado de baja.";
   sout = ss.str();
-  return sout;
-  pthread_cond_signal(&cambio_desc);
 
+  imprimir_datos_c1();
+
+  pthread_cond_signal(&cambio_desc);
+  return sout;
 
 
 }
@@ -160,7 +180,6 @@ string cambiar_tarifa(unsigned dni, char tarifa)
 
   string sout;
   stringstream ss;
-
   for(i=0; i<clientes; i++)
   {
     pthread_mutex_lock(&clients_mutex);
@@ -169,12 +188,15 @@ string cambiar_tarifa(unsigned dni, char tarifa)
 
       datos_c1[i].tarifa = tarifa;
       datos_c1[i].descuento = 0;
-      break;
     }
-    pthread_mutex_unlock(&clients_mutex);
+  pthread_mutex_unlock(&clients_mutex);
   }
+
   ss  << "Tarifa cambiada a " << tarifa << ".";
   sout = ss.str();
+
+  imprimir_datos_c1();
+
   return sout;
 }
 
@@ -186,6 +208,7 @@ void *facturacion(void * time)
 
   do
   {
+    ss.str("");
     pthread_mutex_unlock(&loop_mutex);
 
     fact = 0;
@@ -207,8 +230,10 @@ void *facturacion(void * time)
           }
       }
       ss << "Nueva facturacion estimada: " << fact << " euros ";
+      pthread_mutex_lock(&fact_mutex);
       fact_s = ss.str();
       fact_c = 1;
+      pthread_mutex_unlock(&fact_mutex);
       cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
@@ -218,7 +243,7 @@ void *facturacion(void * time)
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
-
+  cout << "facur terminado" << endl;
   pthread_mutex_unlock(&loop_mutex);
   pthread_exit(NULL);
 }
@@ -285,7 +310,7 @@ void *actualizar_desc(void * time)
     pthread_mutex_lock(&loop_mutex);
 
   }while(loop);
-
+  cout << "actualizar desc terminado" << endl;
   pthread_mutex_unlock(&loop_mutex);
   pthread_cond_signal(&cambio_desc);
   pthread_join(h_factura,NULL);
@@ -293,11 +318,15 @@ void *actualizar_desc(void * time)
 }
 
 string check_fact(){
+  pthread_mutex_lock(&fact_mutex);
   if(fact_c == 1){
     fact_c = 0;
+    pthread_mutex_unlock(&fact_mutex);
     return fact_s;
-  }else
+  }else{
+    pthread_mutex_unlock(&fact_mutex);
     return "";
+  }
 }
 
 void act_desc(long time)
@@ -312,7 +341,6 @@ void act_desc(long time)
 
 void terminarP()
 {
-  pthread_mutex_unlock(&clients_mutex);
 
   pthread_mutex_lock(&loop_mutex);
   loop = 0;
@@ -321,6 +349,6 @@ void terminarP()
   pthread_join(h_desc,NULL);
   cout << endl << "Recibida solicitud de terminacion.";
   cout << endl << "Servidor terminado!" << endl << endl;
-  pthread_exit(NULL);
-  ex = 1;
+
+
 }

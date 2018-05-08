@@ -43,14 +43,14 @@ int main(int argc, char* argv[])
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -p 10000");
+    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -h 163.117.144.211 -p 10000");
 
     interfazPrx remoteService = interfazPrx::checkedCast(base);
     if (!remoteService)
       throw "Invalid proxy";
 
     // your client code here!
-    int ex = 0, thread_control = 0;
+    int exi = 0, thread_control = 0;
     int times = atoi(argv[1]);
 
     do
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
       ss.str("");
       remoteService->checkFact(fact);
       if(fact != ""){
-        cout << fact << endl;
+        cout << fact << endl << endl;
         fact = "";
       }
       do
@@ -114,6 +114,9 @@ int main(int argc, char* argv[])
           dni_s = ss.str();
 
           remoteService->checkUsr(dni_s,1,control);
+          ss.str("");
+          ss << "El usuario con DNI: " << dni << " no esta dado de alta";
+          dni_s = ss.str();
           if(control == dni_s)
             cout << control << endl;
           else{
@@ -147,13 +150,15 @@ int main(int argc, char* argv[])
           break;
         case 6:
           remoteService->terminar(control);
-          ex = 1;
+          ic->shutdown();
+          cout << "Server shutdown" << endl;
+          exi = 1;
           break;
         default:
           break;
       }
 
-    }while(ex == 0);
+    }while(exi == 0);
 
 
   } catch (const Ice::Exception& ex) {
