@@ -345,7 +345,7 @@ void terminarP()
   pthread_mutex_unlock(&loop_mutex);
 
   pthread_join(h_desc,NULL);
-  cout << endl << "Recibida solicitud de terminacion.";
+  cout << endl << "Recibida solicitud de terminacion de cliente." << endl;
   cout << endl << "Cliente terminado!" << endl << endl;
 
 
