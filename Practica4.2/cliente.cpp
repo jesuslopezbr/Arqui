@@ -29,7 +29,6 @@ int main(int argc, char* argv[])
 {
   string port = argv[2];
   string ip = argv[3];
-  string
   int status = 0, opcion = 0;
   unsigned dni;
   string control;
