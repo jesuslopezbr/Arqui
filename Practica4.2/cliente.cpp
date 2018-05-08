@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
   try {
     ic = Ice::initialize(argc, argv);
 
-    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -h" << ip << "-p " << port);
+    Ice::ObjectPrx base = ic->stringToProxy("interfaz:default -h" + ip + "-p " + port);
 
     interfazPrx remoteService = interfazPrx::checkedCast(base);
     if (!remoteService)

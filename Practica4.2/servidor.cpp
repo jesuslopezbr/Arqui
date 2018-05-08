@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
    ic = Ice::initialize(argc, argv);
    Ice::ObjectAdapterPtr adapter =
    ic->createObjectAdapterWithEndpoints("asii_adapter",
-   "default -p " << port);
+   "default -p " + port);
    Ice::ObjectPtr object = new interfazI;
    adapter->add(object, ic->stringToIdentity("interfaz"));
    adapter->activate();
