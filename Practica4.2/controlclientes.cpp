@@ -54,7 +54,7 @@ void imprimir_datos_c1()
   }
   else
   {
-    cout << endl << endl << "Listado de clientes:" << endl << endl;
+    cout << endl << endl << "Listado de clientes:" << << endl;
     for(i=0; i<clientes; i++)
     {
       cout << i+1 << ": " << datos_c1[i].dni << " | " << datos_c1[i].nombre << " | " << datos_c1[i].tarifa << " | " << datos_c1[i].alta << " | " << datos_c1[i].descuento << endl;
@@ -226,7 +226,7 @@ void *facturacion(void * time)
       fact_s = ss.str();
       fact_c = 1;
       pthread_mutex_unlock(&fact_mutex);
-      cout << endl << fact << "--> Aviso enviado a los clientes."<< endl;
+      cout << endl << fact << " euros --> Aviso enviado a los clientes."<< endl;
     }
     pthread_mutex_unlock(&loop_mutex);
 
