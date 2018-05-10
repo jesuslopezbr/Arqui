@@ -124,7 +124,7 @@ string check_usr(unsigned dni, int option) {
   }
 }
 
-string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
+string alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
 {
   int clientes2 = clientes;
   string sout;
