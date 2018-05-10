@@ -1,4 +1,3 @@
-
 #include <controlclientes.h>
 #include <interfazI.h>
 #include <string>
@@ -13,6 +12,7 @@ Demo::interfazI::checkUsr(const ::std::string& dni,
                           const Ice::Current& current)
 {
   unsigned dni2 = stoul(dni,nullptr,0);
+
   sout = check_usr(dni2,opcion);
 }
 
@@ -40,6 +40,7 @@ Demo::interfazI::bajaUsr(const ::std  ::string& dni,
 {
   cout << "Recibida solicitud de baja de cliente." << endl;
   int i = stoi(dni,NULL,0);
+
   sout = baja_usr(i);
 }
 
@@ -66,6 +67,7 @@ Demo::interfazI::cambiarTarifa(const ::std::string& dni,
 {
   cout << "Recibida solicitud de cambio de tarifa." << endl;
   unsigned dni2 = stoul(dni,nullptr,0);
+  
   sout = cambiar_tarifa(dni2, tarifa);
 }
 
@@ -73,5 +75,5 @@ void
 Demo::interfazI::terminar(::std::string& sout,
                           const Ice::Current& current)
 {
-      terminarP();
+  terminarP();
 }

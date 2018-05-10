@@ -1,6 +1,5 @@
 #include <string>
 
-
 void menu();
 
 void imprimir_datos_c1();

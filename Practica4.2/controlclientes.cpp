@@ -7,7 +7,6 @@
 #include <controlclientes.h>
 #include <sstream>
 
-
 using namespace std;
 
 #define MAX_CLIENTES 50
@@ -45,6 +44,7 @@ void menu()
   cout << endl << "[6] Terminar" << endl;
   cout << endl << "Opcion: ";
 }
+
 void imprimir_datos_c1()
 {
   pthread_mutex_lock(&clients_mutex);
@@ -64,9 +64,9 @@ void imprimir_datos_c1()
 }
 
 void clear_fail_state(){
-    cout << endl << "ERROR -- You did not enter an integer" << endl;
-    cin.clear();
-    cin.ignore(80, '\n');
+  cout << endl << "ERROR -- You did not enter an integer" << endl;
+  cin.clear();
+  cin.ignore(80, '\n');
 }
 
 string check_usr(unsigned dni, int option) {
@@ -80,7 +80,6 @@ string check_usr(unsigned dni, int option) {
     {
       if(dni == datos_c1[i].dni)
       {
-        //dni_s = std::to_string(dni);
         ss  << "El usuario con DNI: " << dni << " ya figura en el sistema";
         sout = ss.str();
         pthread_mutex_unlock(&clients_mutex);
@@ -127,24 +126,23 @@ string check_usr(unsigned dni, int option) {
 
 string  alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigned desc)
 {
+  int clientes2 = clientes;
+  string sout;
+  stringstream ss;
+  pthread_mutex_lock(&clients_mutex);
+  datos_c1[clientes2].dni = dni;
+  datos_c1[clientes2].nombre = nombre;
+  datos_c1[clientes2].tarifa = tarifa;
+  datos_c1[clientes2].alta = alta;
+  datos_c1[clientes2].descuento = desc;
+  clientes++;
+  pthread_mutex_unlock(&clients_mutex);
+  ss  << "Cliente con dni " << dni << " añadido.";
+  sout = ss.str();
 
-    int clientes2 = clientes;
-    string sout;
-    stringstream ss;
-    pthread_mutex_lock(&clients_mutex);
-    datos_c1[clientes2].dni = dni;
-    datos_c1[clientes2].nombre = nombre;
-    datos_c1[clientes2].tarifa = tarifa;
-    datos_c1[clientes2].alta = alta;
-    datos_c1[clientes2].descuento = desc;
-    clientes++;
-    pthread_mutex_unlock(&clients_mutex);
-    ss  << "Cliente con dni " << dni << " añadido.";
-    sout = ss.str();
+  imprimir_datos_c1();
 
-    imprimir_datos_c1();
-
-    return sout;
+  return sout;
 }
 
 string baja_usr(int i)
@@ -157,11 +155,8 @@ string baja_usr(int i)
   pthread_mutex_lock(&clients_mutex);
   for(j = i; j<clientes;j++)
   {
-
     datos_c1[j]=datos_c1[j+1];
-
   }
-
   clientes--;
   pthread_mutex_unlock(&clients_mutex);
   ss  << "Cliente dado de baja.";
@@ -171,13 +166,10 @@ string baja_usr(int i)
 
   pthread_cond_signal(&cambio_desc);
   return sout;
-
-
 }
 
 string cambiar_tarifa(unsigned dni, char tarifa)
 {
-
   string sout;
   stringstream ss;
   for(i=0; i<clientes; i++)
@@ -189,7 +181,7 @@ string cambiar_tarifa(unsigned dni, char tarifa)
       datos_c1[i].tarifa = tarifa;
       datos_c1[i].descuento = 0;
     }
-  pthread_mutex_unlock(&clients_mutex);
+    pthread_mutex_unlock(&clients_mutex);
   }
 
   ss  << "Tarifa cambiada a " << tarifa << ".";
@@ -270,7 +262,6 @@ void *actualizar_desc(void * time)
     for(i=0; i<clientes; i++)
     {
         pthread_mutex_lock(&clients_mutex);
-
         if(datos_c1[i].tarifa == 'A'){
           if(datos_c1[i].alta < 2008 && datos_c1[i].descuento != 30)
           {
@@ -339,7 +330,6 @@ void act_desc(long time)
 
 void terminarP()
 {
-
   pthread_mutex_lock(&loop_mutex);
   loop = 0;
   pthread_mutex_unlock(&loop_mutex);
@@ -347,6 +337,4 @@ void terminarP()
   pthread_join(h_desc,NULL);
   cout << endl << "Recibida solicitud de terminacion de cliente." << endl;
   cout << endl << "Cliente terminado!" << endl << endl;
-
-
 }
