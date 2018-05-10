@@ -6,7 +6,7 @@ using namespace Demo;
 
 int main(int argc, char* argv[])
 {
-  string port = argv[1];
+ string port = argv[1];
  int status = 0;
  Ice::CommunicatorPtr ic;
  try {
