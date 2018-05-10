@@ -54,7 +54,7 @@ void imprimir_datos_c1()
   }
   else
   {
-    cout << "Listado de clientes:" << endl;
+    cout << endl << "Listado de clientes:" << endl;
     for(i=0; i<clientes; i++)
     {
       cout << i+1 << ": " << datos_c1[i].dni << " | " << datos_c1[i].nombre << " | " << datos_c1[i].tarifa << " | " << datos_c1[i].alta << " | " << datos_c1[i].descuento << endl;
@@ -80,7 +80,7 @@ string check_usr(unsigned dni, int option) {
     {
       if(dni == datos_c1[i].dni)
       {
-        ss  << "El usuario con DNI: " << dni << " ya figura en el sistema";
+        ss  << endl << "El usuario con DNI: " << dni << " ya figura en el sistema";
         sout = ss.str();
         pthread_mutex_unlock(&clients_mutex);
         return sout;
@@ -113,7 +113,7 @@ string check_usr(unsigned dni, int option) {
     return "Ok";
   }
   else if  (option == 1 || option == 2){
-    ss << "El usuario con DNI: " << dni << " no esta dado de alta";
+    ss << endl << "El usuario con DNI: " << dni << " no esta dado de alta";
     sout = ss.str();
     pthread_mutex_unlock(&clients_mutex);
     return sout;
@@ -137,7 +137,7 @@ string alta_usr(unsigned dni, string nombre, char tarifa, unsigned alta, unsigne
   datos_c1[clientes2].descuento = desc;
   clientes++;
   pthread_mutex_unlock(&clients_mutex);
-  ss  << "Cliente con dni " << dni << " añadido.";
+  ss  << endl << "Cliente con dni " << dni << " añadido.";
   sout = ss.str();
 
   imprimir_datos_c1();
@@ -159,7 +159,7 @@ string baja_usr(int i)
   }
   clientes--;
   pthread_mutex_unlock(&clients_mutex);
-  ss  << "Cliente dado de baja.";
+  ss  << endl << "Cliente dado de baja.";
   sout = ss.str();
 
   imprimir_datos_c1();
@@ -184,7 +184,7 @@ string cambiar_tarifa(unsigned dni, char tarifa)
     pthread_mutex_unlock(&clients_mutex);
   }
 
-  ss  << "Tarifa cambiada a " << tarifa << ".";
+  ss  << endl << "Tarifa cambiada a " << tarifa;
   sout = ss.str();
 
   imprimir_datos_c1();
@@ -294,7 +294,7 @@ void *actualizar_desc(void * time)
 
     if(cambio)
     {
-        pthread_cond_signal(&cambio_desc);
+      pthread_cond_signal(&cambio_desc);
     }
 
     pthread_mutex_lock(&loop_mutex);

@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 
           remoteService->checkUsr(dni_s,1,control);
           ss.str("");
-          ss << "El usuario con DNI: " << dni << " no esta dado de alta";
+          ss << endl << "El usuario con DNI: " << dni << " no esta dado de alta";
           dni_s = ss.str();
           if(control == dni_s)
             cout << control << endl;
