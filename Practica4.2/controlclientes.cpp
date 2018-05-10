@@ -54,7 +54,7 @@ void imprimir_datos_c1()
   }
   else
   {
-    cout << endl << "Listado de clientes:" << endl;
+    cout << endl << endl << "Listado de clientes:" << endl << endl;
     for(i=0; i<clientes; i++)
     {
       cout << i+1 << ": " << datos_c1[i].dni << " | " << datos_c1[i].nombre << " | " << datos_c1[i].tarifa << " | " << datos_c1[i].alta << " | " << datos_c1[i].descuento << endl;
